@@ -13,7 +13,6 @@ export class AdminUseCase {
   async login(email: string, password: string): Promise<string | null> {
     const adminEmail = process.env.ADMIN_EMAIL;
     const adminPassword = process.env.ADMIN_PASSWORD;
-    console.log("ajkasjhd", adminEmail, adminPassword);
 
     if (email === adminEmail && password === adminPassword) {
       const token = this._jwt.generateToken({ email, role: "admin" });
