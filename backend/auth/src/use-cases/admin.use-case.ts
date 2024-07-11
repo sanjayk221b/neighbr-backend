@@ -1,5 +1,9 @@
+import { Express } from "express";
+import IResident from "../entities/resident.entity";
 import { AdminRepository } from "../infrastructure/repositories/mongo";
 import { JWT } from "../infrastructure/services/jwt";
+import { cloudinary } from "../infrastructure/services/cloudinary";
+import { Multer } from "multer";
 
 export class AdminUseCase {
   private readonly _adminRepository: AdminRepository;
@@ -19,5 +23,27 @@ export class AdminUseCase {
       return token;
     }
     return null;
+  }
+
+  async getResidents(): Promise<IResident[]> {
+    return await this._adminRepository.getResidents();
+  }
+
+  async addResident(
+    data: IResident,
+    file?: Express.Multer.File
+  ): Promise<IResident> {
+    if (file) {
+      try {
+        const result = await cloudinary.uploader.upload(file.path);
+        data.image = result.secure_url;
+      } catch (err) {
+        console.error("Error uploading image to Cloudinary:", err);
+        throw new Error("Image upload failed");
+      }
+    }
+    const newResident = await this._adminRepository.addResident(data);
+    // if (newResident) await sendUserCreatedEvent(data);
+    return newResident;
   }
 }

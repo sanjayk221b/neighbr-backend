@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { AdminUseCase } from "../use-cases/admin.use-case";
+import IResident from "../entities/resident.entity";
 
 export class AdminController {
   private _adminUseCase: AdminUseCase;
@@ -38,6 +39,32 @@ export class AdminController {
       res.status(200).json({ message: "Logout successful" });
     } catch (error) {
       res.status(500).json({ message: "Error during logout", error });
+    }
+  }
+
+  async getResidents(req: Request, res: Response) {
+    try {
+      const residents = await this._adminUseCase.getResidents();
+      res.status(200).json(residents);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Error while fetching residents", error });
+    }
+  }
+
+  async createResident(req: Request, res: Response) {
+    try {
+      const residentData: IResident = req.body;
+      const file = req.file;
+      const newResident = await this._adminUseCase.addResident(
+        residentData,
+        file
+      );
+
+      res.status(201).json(newResident);
+    } catch (error) {
+      res.status(500).json({ message: "Error while creating resident", error });
     }
   }
 }

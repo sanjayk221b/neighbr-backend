@@ -19,6 +19,12 @@ const adminController = new AdminController(adminUseCase);
 const router = Router();
 
 router.post("/login", (req, res, next) => adminController.login(req, res));
+router.post("/resident/create", (req, res, next) =>
+  adminController.createResident(req, res)
+);
+router.get("/residents", (req, res, next) =>
+  adminController.getResidents(req, res)
+);
 
 // router.get("/", AdminController.getWelcomeMessage);
 // router.post("/logout", AdminController.logout);
