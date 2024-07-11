@@ -46,4 +46,9 @@ export class AdminUseCase {
     // if (newResident) await sendUserCreatedEvent(data);
     return newResident;
   }
+
+  async blockUnblockResident(residentId: string) {
+    return await this._adminRepository.blockUnblockResident(residentId);
+  }
+  
 }

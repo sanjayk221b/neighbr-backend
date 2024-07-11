@@ -67,4 +67,22 @@ export class AdminController {
       res.status(500).json({ message: "Error while creating resident", error });
     }
   }
+
+  async blockUnblockResident(req: Request, res: Response) {
+    const residentId = req.params.id;
+    try {
+      const updatedResident = await this._adminUseCase.blockUnblockResident(
+        residentId
+      );
+
+      if (!updatedResident) {
+        return res.status(404).json({ message: "Resident not found" });
+      }
+
+      return res.status(200).json(updatedResident);
+    } catch (error) {
+      console.error(`Error in blockUnblockResident: ${error}`);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  }
 }

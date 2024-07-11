@@ -18,5 +18,14 @@ export class AdminRepository implements IAdminRepository {
     return await newResident.save();
   }
 
-  
+  async blockUnblockResident(residentId: string): Promise<IResident | null> {
+    const resident = await Resident.findById(residentId);
+    if (!resident) return null;
+
+    return await Resident.findByIdAndUpdate(
+      residentId,
+      { isBlocked: !resident.isBlocked },
+      { new: true }
+    );
+  }
 }
