@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { AdminUseCase } from "../use-cases/admin.use-case";
 import IResident from "../entities/resident.entity";
+import ICaretaker from "../entities/caretaker.entity";
 
 export class AdminController {
   private _adminUseCase: AdminUseCase;
@@ -83,6 +84,47 @@ export class AdminController {
     } catch (error) {
       console.error(`Error in blockUnblockResident: ${error}`);
       return res.status(500).json({ message: "Internal server error" });
+    }
+  }
+
+  async getCaretakers(req: Request, res: Response) {
+    try {
+      const caretakers = await this._adminUseCase.getCaretakers();
+      res.status(200).json(caretakers);
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching the caretakers", error });
+    }
+  }
+
+  async createCaretaker(req: Request, res: Response) {
+    try {
+      const caretakerData: ICaretaker = req.body;
+      const file = req.file;
+      const newCaretaker = await this._adminUseCase.addCaretaker(
+        caretakerData,
+        file
+      );
+      res.status(201).json(newCaretaker);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Error creating caretaker", error });
+    }
+  }
+
+  async blockUnblockCaretaker(req: Request, res: Response) {
+    const caretakerId = req.params.id;
+    try {
+      const updatedCaretaker = await this._adminUseCase.blockUnblockCaretaker(
+        caretakerId
+      );
+
+      if (!updatedCaretaker) {
+        return res.status(404).json({ message: "Resident not found" });
+      }
+
+      return res.status(200).json(updatedCaretaker);
+    } catch (error) {
+      console.log(error);
     }
   }
 }

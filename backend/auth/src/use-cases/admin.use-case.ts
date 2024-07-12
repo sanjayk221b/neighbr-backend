@@ -4,6 +4,7 @@ import { AdminRepository } from "../infrastructure/repositories/mongo";
 import { JWT } from "../infrastructure/services/jwt";
 import { cloudinary } from "../infrastructure/services/cloudinary";
 import { Multer } from "multer";
+import ICaretaker from "../entities/caretaker.entity";
 
 export class AdminUseCase {
   private readonly _adminRepository: AdminRepository;
@@ -50,5 +51,30 @@ export class AdminUseCase {
   async blockUnblockResident(residentId: string) {
     return await this._adminRepository.blockUnblockResident(residentId);
   }
-  
+
+  async getCaretakers(): Promise<ICaretaker[]> {
+    return await this._adminRepository.getCaretakers();
+  }
+
+  async addCaretaker(
+    data: ICaretaker,
+    file?: Express.Multer.File
+  ): Promise<ICaretaker> {
+    if (file) {
+      try {
+        const result = await cloudinary.uploader.upload(file.path);
+        data.imageUrl = result.secure_url;
+      } catch (err) {
+        console.error("Error uploading image to Cloudinary:", err);
+        throw new Error("Image upload failed");
+      }
+    }
+    const newCaretaker = await this._adminRepository.addCaretaker(data);
+    // await sendUserCreatedEvent(data);
+    return newCaretaker;
+  }
+
+  async blockUnblockCaretaker(caretakerId: string) {
+    return await this._adminRepository.blockUnblockCaretakers(caretakerId);
+  }
 }

@@ -20,8 +20,6 @@ app.use(
   })
 );
 
-// app.use("/api/auth/user", userRoutes);
 app.use("/api/auth/admin", adminRoutes);
-// app.use("/api/auth/caretaker/", caretakerRoutes);
 
 export default app;
