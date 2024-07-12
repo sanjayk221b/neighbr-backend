@@ -5,6 +5,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import connectDB from "../repositories/mongo/connect";
 import adminRoutes from "../routes/admin.routes";
+import caretakerRoutes from "../routes/caretaker.routes";
+import residentRoutes from "../routes/resident.routes";
 
 const app = express();
 
@@ -21,5 +23,7 @@ app.use(
 );
 
 app.use("/api/auth/admin", adminRoutes);
+app.use("/api/auth/caretaker", caretakerRoutes);
+app.use("/api/auth/resident", residentRoutes);
 
 export default app;

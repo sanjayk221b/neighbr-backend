@@ -7,10 +7,10 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-    "outDir": "dist" 
+    "outDir": "dist"
   },
   "include": [
-    "../../src/**/*"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules"
