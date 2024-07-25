@@ -1,4 +1,7 @@
+import { ObjectId } from "mongoose";
+
 export default interface IResident {
+  _id?: ObjectId;
   name: string;
   email: string;
   mobileNumber: string;

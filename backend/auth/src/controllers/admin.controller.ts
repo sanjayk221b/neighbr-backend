@@ -4,10 +4,10 @@ import IResident from "../entities/resident.entity";
 import ICaretaker from "../entities/caretaker.entity";
 
 export class AdminController {
-  private _adminUseCase: AdminUseCase;
+  private readonly _adminUseCase: AdminUseCase;
 
-  constructor(AdminUseCase: AdminUseCase) {
-    this._adminUseCase = AdminUseCase;
+  constructor(adminUseCase: AdminUseCase) {
+    this._adminUseCase = adminUseCase;
   }
 
   async login(req: Request, res: Response): Promise<void> {

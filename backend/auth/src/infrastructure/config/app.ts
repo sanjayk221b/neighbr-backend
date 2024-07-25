@@ -21,6 +21,11 @@ app.use(
     credentials: true,
   })
 );
+app.use('/api/auth', (req, res, next) => {
+  console.log('[Auth Service] Received request:', req.method, req.url);
+  console.log('[Auth Service] Request body:', req.body);
+  next();
+});
 
 app.use("/api/auth/admin", adminRoutes);
 app.use("/api/auth/caretaker", caretakerRoutes);

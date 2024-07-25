@@ -1,6 +1,7 @@
 import { ResidentRepository } from "../infrastructure/repositories";
 import bcrypt from "bcrypt";
 import { JWT } from "../infrastructure/services/jwt";
+import IResident from "@/entities/resident.entity";
 
 export class ResidentUseCase {
   private readonly _residentRepository: ResidentRepository;
@@ -14,21 +15,77 @@ export class ResidentUseCase {
   async login(
     email: string,
     password: string
-  ): Promise<{ success: boolean; data: string }> {
+  ): Promise<{
+    message: string;
+    token?: string;
+    resident?: Partial<IResident>;
+  }> {
     const resident = await this._residentRepository.getResidentByEmail(email);
 
     if (!resident) {
-      return { success: false, data: "User not found" };
+      return { message: "Resident not found" };
     }
 
-    if (await bcrypt.compare(password, resident.password)) {
-      const token = this._jwt.generateToken({
-        id: resident.email,
-        role: "resident",
-      });
-      return { success: true, data: token };
+    const passwordMatch = await bcrypt.compare(password, resident.password);
+    if (!passwordMatch) {
+      return { message: "Invalid password" };
     }
 
-    return { success: false, data: "Invalid password" };
+    const token = this._jwt.generateToken({
+      id: resident._id,
+      role: "resident",
+    });
+
+    const residentDetails: Partial<IResident> = {
+      name: resident.name,
+      email: resident.email,
+      mobileNumber: resident.mobileNumber,
+      apartmentNumber: resident.apartmentNumber,
+      isBlocked: resident.isBlocked,
+      hasVehicle: resident.hasVehicle,
+      vehicles: resident.vehicles,
+      image: resident.image,
+    };
+
+    return {
+      message: "Login successful",
+      token: token,
+      resident: residentDetails,
+    };
+  }
+
+  async changePassword(
+    email: string,
+    currentPassword: string,
+    newPassword: string
+  ): Promise<{ message: string; success: boolean }> {
+    const resident = await this._residentRepository.getResidentByEmail(email);
+
+    if (!resident) {
+      return { message: "Resident not found", success: false };
+    }
+
+    const passwordMatch = await bcrypt.compare(
+      currentPassword,
+      resident.password
+    );
+    if (!passwordMatch) {
+      return { message: "Current password is incorrect", success: false };
+    }
+
+    const saltRounds = 10;
+    const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    const passwordChanged =
+      await this._residentRepository.changeResidentPassword(
+        email,
+        hashedNewPassword
+      );
+
+    if (passwordChanged) {
+      return { message: "Password changed successfully", success: true };
+    } else {
+      return { message: "Failed to change password", success: false };
+    }
   }
 }
