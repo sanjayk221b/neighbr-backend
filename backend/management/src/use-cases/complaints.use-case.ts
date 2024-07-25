@@ -38,4 +38,8 @@ export class ComplaintsUseCase {
   async getAllComplaints(): Promise<IComplaint[]> {
     return await this._complaintsRepository.getAllComplaints();
   }
+
+  async updateComplaint(complaintId: string, updateData: Partial<IComplaint>): Promise<IComplaint> {
+    return await this._complaintsRepository.updateComplaint(complaintId, updateData);
+  }
 }

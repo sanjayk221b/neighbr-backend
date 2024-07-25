@@ -14,6 +14,21 @@ export class ComplaintsRepository implements IComplaintsRepository {
   }
 
   async getAllComplaints(): Promise<IComplaint[]> {
-    return await Complaint.find();
+    return await Complaint.find().populate("residentId");
+  }
+
+  async updateComplaint(
+    complaintId: string,
+    updateData: Partial<IComplaint>
+  ): Promise<IComplaint> {
+    const updatedComplaint = await Complaint.findByIdAndUpdate(
+      complaintId,
+      updateData,
+      { new: true }
+    );
+    if (!updatedComplaint) {
+      throw new Error("Complaint not found");
+    }
+    return updatedComplaint;
   }
 }

@@ -20,4 +20,8 @@ export class VisitorRepository implements IVisitorRepository {
     });
     return updatedVisitor;
   }
+
+  async getVisitorsByResident(residentId: string): Promise<IVisitor[]> {
+    return await Visitor.find({ residentId });
+  }
 }

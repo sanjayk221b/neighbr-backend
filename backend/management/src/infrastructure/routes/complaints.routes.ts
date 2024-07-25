@@ -23,7 +23,7 @@ const router = Router();
 router.post("/create",residentAuth,upload.single("image"), (req, res, next) => complaintsController.addComplaint(req, res, next));
 router.get("/",residentAuth, (req, res, next) => complaintsController.getComplaintsByResident(req, res, next));
 router.get("/all", (req, res, next) => complaintsController.getAllComplaints(req, res, next));
-// router.put("/:id/update", (req, res, next) => complaintsController.)
+router.put("/update", (req, res, next) => complaintsController.updateComplaint(req, res, next));
 
 
 export default router;

@@ -9,7 +9,7 @@ export class VisitorController {
     this._visitorUseCase = visitorUseCase;
   }
 
-  async createVisitor(req: Request, res: Response) {
+  async createVisitor(req: Request, res: Response, next: NextFunction) {
     try {
       const visitorData: IVisitor = req.body;
       const file = req.file;
@@ -20,21 +20,34 @@ export class VisitorController {
 
       res.status(201).json(newVisitor);
     } catch (error) {
-      console.error("Error creating visitor:", error);
-      res.status(500).json({ message: "Error creating visitor", error });
+      next(error);
     }
   }
 
-  async getVisitors(req: Request, res: Response) {
+  async getVisitors(req: Request, res: Response, next: NextFunction) {
     try {
       const visitors = await this._visitorUseCase.getVisitors();
       res.status(200).json(visitors);
     } catch (error) {
-      res.status(500).json({ message: "Error while fetching visitors", error });
+      next(error);
     }
   }
 
-  async updateVisitor(req: Request, res: Response) {
+  async getVisitorsByResidentId(req: any, res: Response, next: NextFunction) {
+    try {
+      const residentId = req.residentId;
+      const visitors = await this._visitorUseCase.getVisitorsByResidentId(
+        residentId
+      );
+      console.log("visitors residentId");
+
+      res.status(200).json(visitors);
+    } catch (error: any) {
+      next(error);
+    }
+  }
+
+  async updateVisitor(req: Request, res: Response, next: NextFunction) {
     try {
       const id: string = req.params.id;
       const visitorData: IVisitor = req.body;
@@ -46,8 +59,7 @@ export class VisitorController {
 
       res.status(200).json(updatedVisitor);
     } catch (error) {
-      console.error("Error updating visitor:", error);
-      res.status(500).json({ message: "Error updating visitor", error });
+      next(error);
     }
   }
 }

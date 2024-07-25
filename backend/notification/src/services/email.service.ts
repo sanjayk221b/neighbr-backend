@@ -39,11 +39,15 @@ export const sendEmail = async (userData: any) => {
             <p style="font-size: 16px; color: #4B5563; margin-bottom: 15px;">Thank you for joining our Resident Visitor Management App. We're excited to have you on board and help you manage your visitors with ease.</p>
             <p style="font-size: 16px; color: #4B5563; margin-bottom: 15px;">Here are your login credentials:</p>
             <div style="background-color: #EFF6FF; border-left: 4px solid #3B82F6; padding: 15px; margin-bottom: 20px;">
-              <p style="font-size: 16px; color: #1E40AF; margin: 0;">Email: <strong>${userData.email}</strong></p>
-              <p style="font-size: 16px; color: #1E40AF; margin: 10px 0 0;">Temporary Password: <strong>${userData.password}</strong></p>
-            </div>
+            <p style="font-size: 16px; color: #1E40AF; margin: 10px 0 0;">Temporary Password: 
+              <span style="background-color: #D1D5DB; color: #D1D5DB; user-select: all;">
+                ${userData.password}
+              </span>
+              <span style="font-size: 14px; color: #6B7280;"> (Select to reveal)</span>
+            </p>
+          </div>
             <p style="font-size: 16px; color: #4B5563; margin-bottom: 20px;"><strong>Important:</strong> Please log in using this temporary password and change it immediately for security reasons.</p>
-            <a href="#" style="display: inline-block; background-color: #3B82F6; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; font-weight: bold;">Log In Now</a>
+            <a href="http://localhost:5173/" style="display: inline-block; background-color: #3B82F6; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; font-weight: bold;">Log In Now</a>
             <p style="font-size: 16px; color: #4B5563; margin-top: 30px;">If you have any questions or need assistance, please don't hesitate to contact our support team.</p>
             <p style="font-size: 16px; color: #4B5563; margin-bottom: 0;">Welcome aboard!</p>
           </div>

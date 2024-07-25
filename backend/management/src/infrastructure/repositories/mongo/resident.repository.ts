@@ -6,4 +6,14 @@ export class ResidentRepository implements IResidentRepository {
   async getResidentByEmail(email: string): Promise<IResident | null> {
     return Resident.findOne({ email });
   }
+
+  async updateResident(residentData: Partial<IResident>): Promise<IResident> {
+    const updatedResident = await Resident.findOneAndUpdate(
+      { email: residentData.email },
+      residentData,
+      { new: true, upsert: true }
+    );
+
+    return updatedResident;
+  }
 }

@@ -60,4 +60,20 @@ export class ComplaintsController {
       next(error);
     }
   }
+
+  async updateComplaint(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id: complaintId, data: updateData } = req.body;
+
+      const updatedComplaint = await this._complaintsUseCase.updateComplaint(
+        complaintId,
+        updateData
+      );
+      res.status(200).json(updatedComplaint);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  
 }

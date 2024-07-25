@@ -1,20 +1,13 @@
 import { IVisitor } from "@/entities";
 import { VisitorRepository } from "@/infrastructure/repositories/mongo";
-import { EncryptPassword } from "@/infrastructure/services/encryptPassword";
 import { Cloudinary } from "@/infrastructure/services/cloudinary";
 
 export class VisitorUseCase {
   private readonly _visitorRepository: VisitorRepository;
-  private readonly _encryptPassword: EncryptPassword;
   private readonly _cloudinary: Cloudinary;
 
-  constructor(
-    visitorRepository: VisitorRepository,
-    encryptPassword: EncryptPassword,
-    cloudinary: Cloudinary
-  ) {
+  constructor(visitorRepository: VisitorRepository, cloudinary: Cloudinary) {
     this._visitorRepository = visitorRepository;
-    this._encryptPassword = encryptPassword;
     this._cloudinary = cloudinary;
   }
 
@@ -38,6 +31,10 @@ export class VisitorUseCase {
 
   async getVisitors(): Promise<IVisitor[]> {
     return await this._visitorRepository.getVisitors();
+  }
+
+  async getVisitorsByResidentId(residentId: string) {
+    return await this._visitorRepository.getVisitorsByResident(residentId);
   }
 
   async updateVisitor(id: string, data: IVisitor): Promise<IVisitor> {
