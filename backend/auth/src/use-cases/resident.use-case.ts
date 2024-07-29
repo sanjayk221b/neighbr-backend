@@ -1,7 +1,7 @@
 import { ResidentRepository } from "../infrastructure/repositories";
 import bcrypt from "bcrypt";
 import { JWT } from "../infrastructure/services/jwt";
-import IResident from "@/entities/resident.entity";
+import { IResident } from "@/entities";
 
 export class ResidentUseCase {
   private readonly _residentRepository: ResidentRepository;
@@ -26,6 +26,12 @@ export class ResidentUseCase {
       return { message: "Resident not found" };
     }
 
+    if (resident.isBlocked) {
+      return {
+        message: "Your account is blocked. Please contact the administration.",
+      };
+    }
+
     const passwordMatch = await bcrypt.compare(password, resident.password);
     if (!passwordMatch) {
       return { message: "Invalid password" };
@@ -37,6 +43,7 @@ export class ResidentUseCase {
     });
 
     const residentDetails: Partial<IResident> = {
+      _id: resident._id,
       name: resident.name,
       email: resident.email,
       mobileNumber: resident.mobileNumber,

@@ -1,4 +1,4 @@
-import ICaretaker from "../entities/caretaker.entity";
+import { ICaretaker } from "@/entities";
 import { CaretakerRepository } from "../infrastructure/repositories/mongo/";
 import bcrypt from "bcrypt";
 import { JWT } from "../infrastructure/services/jwt";

@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { AdminUseCase } from "../use-cases/admin.use-case";
-import IResident from "../entities/resident.entity";
-import ICaretaker from "../entities/caretaker.entity";
+import { IResident, ICaretaker } from "@/entities";
 
 export class AdminController {
   private readonly _adminUseCase: AdminUseCase;
@@ -10,7 +9,7 @@ export class AdminController {
     this._adminUseCase = adminUseCase;
   }
 
-  async login(req: Request, res: Response): Promise<void> {
+  async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { email, password } = req.body;
       const token = await this._adminUseCase.login(email, password);
@@ -26,11 +25,11 @@ export class AdminController {
         res.status(401).json({ message: "Invalid email or password" });
       }
     } catch (error) {
-      res.status(500).json({ message: "Error during login", error });
+      next(error);
     }
   }
 
-  async logout(req: Request, res: Response): Promise<void> {
+  async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       res.cookie("neighbr-admin-token", "", {
         httpOnly: true,
@@ -39,11 +38,11 @@ export class AdminController {
       });
       res.status(200).json({ message: "Logout successful" });
     } catch (error) {
-      res.status(500).json({ message: "Error during logout", error });
+      next(error);
     }
   }
 
-  async getResidents(req: Request, res: Response) {
+  async getResidents(req: Request, res: Response, next: NextFunction) {
     try {
       const residents = await this._adminUseCase.getResidents();
       res.status(200).json(residents);
@@ -54,7 +53,7 @@ export class AdminController {
     }
   }
 
-  async createResident(req: Request, res: Response) {
+  async createResident(req: Request, res: Response, next: NextFunction) {
     try {
       const residentData: IResident = req.body;
       const file = req.file;
@@ -65,11 +64,11 @@ export class AdminController {
 
       res.status(201).json(newResident);
     } catch (error) {
-      res.status(500).json({ message: "Error while creating resident", error });
+      next(error);
     }
   }
 
-  async blockUnblockResident(req: Request, res: Response) {
+  async blockUnblockResident(req: Request, res: Response, next: NextFunction) {
     const residentId = req.params.id;
     try {
       const updatedResident = await this._adminUseCase.blockUnblockResident(
@@ -83,20 +82,20 @@ export class AdminController {
       return res.status(200).json(updatedResident);
     } catch (error) {
       console.error(`Error in blockUnblockResident: ${error}`);
-      return res.status(500).json({ message: "Internal server error" });
+      next(error);
     }
   }
 
-  async getCaretakers(req: Request, res: Response) {
+  async getCaretakers(req: Request, res: Response, next: NextFunction) {
     try {
       const caretakers = await this._adminUseCase.getCaretakers();
       res.status(200).json(caretakers);
     } catch (error) {
-      res.status(500).json({ message: "Error fetching the caretakers", error });
+      next(error);
     }
   }
 
-  async createCaretaker(req: Request, res: Response) {
+  async createCaretaker(req: Request, res: Response, next: NextFunction) {
     try {
       const caretakerData: ICaretaker = req.body;
       const file = req.file;
@@ -107,11 +106,11 @@ export class AdminController {
       res.status(201).json(newCaretaker);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: "Error creating caretaker", error });
+      next(error);
     }
   }
 
-  async blockUnblockCaretaker(req: Request, res: Response) {
+  async blockUnblockCaretaker(req: Request, res: Response, next: NextFunction) {
     const caretakerId = req.params.id;
     try {
       const updatedCaretaker = await this._adminUseCase.blockUnblockCaretaker(
@@ -124,7 +123,7 @@ export class AdminController {
 
       return res.status(200).json(updatedCaretaker);
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 }

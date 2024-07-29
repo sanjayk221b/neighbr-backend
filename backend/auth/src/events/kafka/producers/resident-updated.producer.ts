@@ -1,5 +1,5 @@
 import { producer, connectProducer, disconnectProducer } from "../index";
-import IResident from "@/entities/resident.entity";
+import { IResident } from "@/entities";
 
 export const sendResidentUpdatedEvent = async (resident: IResident) => {
   await connectProducer();

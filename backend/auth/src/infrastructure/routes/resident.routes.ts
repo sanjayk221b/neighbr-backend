@@ -19,8 +19,8 @@ const residentController = new ResidentController(residentUseCase);
 const router = Router();
 
 //authentication routes
-router.post("/login", (req, res, next) => residentController.login(req, res));
-router.post("/logout", (req, res, next) => residentController.logout(req, res));
-router.put("/change-password", (req, res, next) => residentController.changePassword(req, res));
+router.post("/login", (req, res, next) => residentController.login(req, res, next));
+router.post("/logout", (req, res, next) => residentController.logout(req, res, next));
+router.put("/change-password", (req, res, next) => residentController.changePassword(req, res, next));
 
 export default router;

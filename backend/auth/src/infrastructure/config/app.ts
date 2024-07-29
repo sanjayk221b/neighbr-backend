@@ -7,6 +7,7 @@ import connectDB from "../repositories/mongo/connect";
 import adminRoutes from "../routes/admin.routes";
 import caretakerRoutes from "../routes/caretaker.routes";
 import residentRoutes from "../routes/resident.routes";
+import { errorHandler } from "../middlewares/errorHandler";
 
 const app = express();
 
@@ -30,5 +31,7 @@ app.use('/api/auth', (req, res, next) => {
 app.use("/api/auth/admin", adminRoutes);
 app.use("/api/auth/caretaker", caretakerRoutes);
 app.use("/api/auth/resident", residentRoutes);
+
+app.use(errorHandler);
 
 export default app;

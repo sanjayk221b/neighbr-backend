@@ -1,4 +1,4 @@
-export default interface ICaretaker {
+export interface ICaretaker {
   _id?: string;
   name: string;
   email: string;

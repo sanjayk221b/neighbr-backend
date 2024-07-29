@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
-import ICaretaker from "../../../../entities/caretaker.entity";
+import { ICaretaker } from "@/entities"; 
 
 const caretakerSchema = new mongoose.Schema<ICaretaker>(
   {

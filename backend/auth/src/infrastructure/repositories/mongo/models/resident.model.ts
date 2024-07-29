@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
-import IResident from "../../../../entities/resident.entity";
+import { IResident } from "@/entities";
 
-const userSchema = new mongoose.Schema<IResident>(
+const residentSchema = new mongoose.Schema<IResident>(
   {
     name: {
       type: String,
@@ -48,6 +48,6 @@ const userSchema = new mongoose.Schema<IResident>(
   }
 );
 
-const User = mongoose.model<IResident>("User", userSchema);
+const Resident = mongoose.model<IResident>("Resident", residentSchema);
 
-export default User;
+export default Resident;

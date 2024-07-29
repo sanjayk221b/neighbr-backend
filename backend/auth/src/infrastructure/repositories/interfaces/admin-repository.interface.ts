@@ -1,5 +1,5 @@
-import IResident from "../../../entities/resident.entity";
-import ICaretaker from "../../../entities/caretaker.entity";
+import { IResident, ICaretaker } from "@/entities";
+
 
 export interface IAdminRepository {
   addResident(resident: IResident): Promise<IResident>;

@@ -1,4 +1,4 @@
-import IResident from "../../../entities/resident.entity";
+import { IResident } from "@/entities";
 import { IResidentRepository } from "../interfaces/resident-repository.interface";
 import Resident from "./models/resident.model";
 

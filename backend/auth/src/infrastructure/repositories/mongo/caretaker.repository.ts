@@ -1,4 +1,4 @@
-import ICaretaker from "../../../entities/caretaker.entity";
+import { ICaretaker } from "@/entities";
 import { ICaretakerRepository } from "../interfaces/caretaker-repository.interface";
 import Caretaker from "./models/caretaker.model";
 

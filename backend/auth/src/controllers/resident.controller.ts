@@ -8,7 +8,7 @@ export class ResidentController {
     this._residentUsecase = ResidentUseCase;
   }
 
-  async login(req: Request, res: Response): Promise<void> {
+  async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { email, password } = req.body;
       const result = await this._residentUsecase.login(email, password);
@@ -30,11 +30,11 @@ export class ResidentController {
         });
       }
     } catch (error) {
-      res.status(500).json({ message: "Error during login", error });
+      next(error);
     }
   }
 
-  async logout(req: Request, res: Response): Promise<void> {
+  async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       res.cookie("neighbr-user-token", "", {
         httpOnly: true,
@@ -43,11 +43,15 @@ export class ResidentController {
       });
       res.status(200).json({ message: "Logout successful" });
     } catch (error) {
-      res.status(500).json({ message: "Error during logout", error });
+      next(error);
     }
   }
 
-  async changePassword(req: Request, res: Response): Promise<void> {
+  async changePassword(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const { email, currentPassword, newPassword } = req.body;
       const result = await this._residentUsecase.changePassword(
@@ -62,7 +66,7 @@ export class ResidentController {
         res.status(400).json({ message: result.message });
       }
     } catch (error) {
-      res.status(500).json({ message: "Error during password change", error });
+      next(error);
     }
   }
 }

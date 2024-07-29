@@ -1,5 +1,5 @@
-import { producer, connectProducer, disconnectProducer } from "../index";
-import ICaretaker from "@/entities/caretaker.entity";
+import { producer, connectProducer, disconnectProducer } from "@/events/kafka";
+import { ICaretaker } from "@/entities";
 
 export const sendCaretakerCreatedEvent = async (caretaker: ICaretaker) => {
   await connectProducer();

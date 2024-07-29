@@ -1,6 +1,6 @@
 import { ObjectId } from "mongoose";
 
-export default interface IResident {
+export interface IResident {
   _id?: ObjectId;
   name: string;
   email: string;

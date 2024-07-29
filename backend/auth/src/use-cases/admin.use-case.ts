@@ -1,8 +1,7 @@
-import IResident from "../entities/resident.entity";
+import { IResident, ICaretaker } from "@/entities";
 import { AdminRepository } from "../infrastructure/repositories/mongo";
 import { JWT } from "../infrastructure/services/jwt";
 import { cloudinary } from "../infrastructure/services/cloudinary";
-import ICaretaker from "../entities/caretaker.entity";
 import { sendResidentCreatedEvent } from "../events/kafka/producers/resident-created.producer";
 import { sendCaretakerCreatedEvent } from "../events/kafka/producers/caretaker-created.producer";
 import { sendResidentUpdatedEvent } from "../events/kafka/producers/resident-updated.producer";

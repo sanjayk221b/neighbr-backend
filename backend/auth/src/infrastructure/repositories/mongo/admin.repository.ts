@@ -1,6 +1,5 @@
 import { IAdminRepository } from "../index";
-import IResident from "../../../entities/resident.entity";
-import ICaretaker from "../../../entities/caretaker.entity";
+import { IResident, ICaretaker } from "@/entities";
 import Resident from "./models/resident.model";
 import Caretaker from "./models/caretaker.model";
 import bcrypt from "bcrypt";
