@@ -32,6 +32,7 @@ const services = {
   auth: "http://localhost:4000",
   notification: "http://localhost:4001",
   management: "http://localhost:4002",
+  communication: "http://localhost:4003",
 };
 
 // Routes to proxy
@@ -49,6 +50,11 @@ const routes = [
   {
     context: "/api/management",
     target: services.management,
+    changeOrigin: true,
+  },
+  {
+    context: "/api/communication",
+    target: services.communication,
     changeOrigin: true,
   },
 ];
