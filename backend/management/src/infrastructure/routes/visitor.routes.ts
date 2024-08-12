@@ -2,9 +2,9 @@ import { Router } from "express";
 import { VisitorUseCase } from "../../use-cases";
 import { VisitorController } from "../../controllers";
 import { VisitorRepository } from "../repositories/mongo";
-import upload from "../middlewares/multer.middleware";
+import {upload} from "@neighbr/common";
 import { Cloudinary } from "../services/cloudinary";
-import { residentAuth } from "../middlewares/resident-auth.middleware";
+import { residentAuth } from "@neighbr/common/dist/middlewares/resident-auth.middleware";
 
 //services
 const cloudinary = new Cloudinary();

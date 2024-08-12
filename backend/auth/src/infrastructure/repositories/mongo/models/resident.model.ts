@@ -30,6 +30,10 @@ const residentSchema = new mongoose.Schema<IResident>(
       type: Boolean,
       default: false,
     },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
     hasVehicle: {
       type: Boolean,
       default: false,

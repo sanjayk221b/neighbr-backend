@@ -17,10 +17,9 @@ const startServer = async () => {
   try {
     await connectResidentCreatedConsumer();
     await connectCaretakerCreatedConsumer();
-    console.log("Kafka consumer connected");
 
     app.listen(PORT, () => {
-      console.log(`Notification Service is running on port ${PORT}`);
+      `[ SERVICE :: NOTIFICATION SERVICE] is listening on http://localhost:${PORT}`;
     });
   } catch (error) {
     console.error("Failed to start the server:", error);
@@ -33,7 +32,6 @@ process.on("SIGINT", async () => {
   try {
     await disconnectResidentCreatedConsumer();
     await disconnectCaretakerCreatedConsumer();
-    console.log("Kafka consumer disconnected");
     process.exit(0);
   } catch (error) {
     console.error("Error during shutdown:", error);

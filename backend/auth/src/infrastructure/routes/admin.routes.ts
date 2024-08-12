@@ -3,7 +3,7 @@ import { JWT } from "../services/jwt";
 import { AdminRepository } from "../repositories";
 import { AdminController } from "../../controllers/admin.controller";
 import { AdminUseCase } from "../../use-cases/admin.use-case";
-import upload from "../middlewares/multer.middleware";
+import {upload} from "@neighbr/common";
 
 //services
 const jwt = new JWT();

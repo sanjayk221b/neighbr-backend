@@ -36,10 +36,10 @@ export class VisitorController {
   async getVisitorsByResidentId(req: any, res: Response, next: NextFunction) {
     try {
       const residentId = req.residentId;
+      console.log("visitors residentId", req.residentId);
       const visitors = await this._visitorUseCase.getVisitorsByResidentId(
         residentId
       );
-      console.log("visitors residentId");
 
       res.status(200).json(visitors);
     } catch (error: any) {

@@ -29,10 +29,11 @@ app.use(morgan("dev"));
 
 // Services
 const services = {
-  auth: "http://localhost:4000",
-  notification: "http://localhost:4001",
-  management: "http://localhost:4002",
-  communication: "http://localhost:4003",
+  auth: process.env.AUTH_SERVICE_URL as string,
+  notification: process.env.NOTIFICATION_SERVICE_URL as string,
+  management: process.env.MANAGEMENT_SERVICE_URL as string,
+  communication: process.env.COMMUNICATION_SERVICE_URL as string,
+  community: process.env.COMMUNITY_SERVICE_URL as string,
 };
 
 // Routes to proxy
@@ -55,6 +56,11 @@ const routes = [
   {
     context: "/api/communication",
     target: services.communication,
+    changeOrigin: true,
+  },
+  {
+    context: "/api/v1/community",
+    target: services.community,
     changeOrigin: true,
   },
 ];

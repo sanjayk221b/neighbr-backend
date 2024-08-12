@@ -1,8 +1,11 @@
+import { ObjectId } from "mongoose";
+
 export interface IVisitor {
   name: string;
   email: string;
   mobileNumber: string;
   apartmentNumber: string;
+  residentId: ObjectId;
   image: string;
   hasVehicle: boolean;
   vehicleNumber?: string;

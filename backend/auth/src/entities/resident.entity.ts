@@ -8,6 +8,7 @@ export interface IResident {
   apartmentNumber: string;
   password: string;
   isBlocked?: boolean;
+  isAdmin?: boolean;
   hasVehicle?: boolean;
   vehicles?: [string];
   image?: string;

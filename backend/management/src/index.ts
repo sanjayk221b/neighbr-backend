@@ -1,7 +1,7 @@
 import app from "@/infrastructure/config/app"
 
-const PORT = process.env.PORT || 4002;
+const PORT = process.env.PORT;
 
 app.listen(PORT, () =>
-  console.log(`server is running on http://localhost:${PORT}`)
+  `[ SERVICE :: MANAGEMENT SERVICE ] is listening on http://localhost:${PORT}`
 );

@@ -1,7 +1,7 @@
 import app from "@/infrastructure/config/app";
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT;
 
 app.listen(PORT, () =>
-  console.log(`server is running on http://localhost:${PORT}`)
+  `[ SERVICE :: AUTH SERVICE] AUTH service is listening on http://localhost:${PORT}`
 );

@@ -1,5 +1,5 @@
 import { IComplaint } from "@/entities";
-import { ComplaintsRepository } from "@/infrastructure/repositories/mongo/complaints.repository";
+import { ComplaintsRepository } from "@/infrastructure/repositories/mongo/complaint.repository";
 import { Cloudinary } from "@/infrastructure/services/cloudinary";
 
 export class ComplaintsUseCase {
@@ -34,12 +34,25 @@ export class ComplaintsUseCase {
   async getComplaintsByResident(residentId: string): Promise<IComplaint[]> {
     return await this._complaintsRepository.getComplaintsByResident(residentId);
   }
-
-  async getAllComplaints(): Promise<IComplaint[]> {
-    return await this._complaintsRepository.getAllComplaints();
+  async getComplaintsByAdmin(): Promise<IComplaint[]> {
+    return await this._complaintsRepository.getAllComplaintsByRecipientType(
+      "admin"
+    );
   }
 
-  async updateComplaint(complaintId: string, updateData: Partial<IComplaint>): Promise<IComplaint> {
-    return await this._complaintsRepository.updateComplaint(complaintId, updateData);
+  async getComplaintsByCaretaker(): Promise<IComplaint[]> {
+    return await this._complaintsRepository.getAllComplaintsByRecipientType(
+      "caretaker"
+    );
+  }
+
+  async updateComplaint(
+    complaintId: string,
+    updateData: Partial<IComplaint>
+  ): Promise<IComplaint> {
+    return await this._complaintsRepository.updateComplaint(
+      complaintId,
+      updateData
+    );
   }
 }

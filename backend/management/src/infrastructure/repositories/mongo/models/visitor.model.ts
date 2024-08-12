@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose from "mongoose";
 import { IVisitor } from "@/entities";
 
 const visitorSchema = new mongoose.Schema<IVisitor>(
@@ -17,6 +17,11 @@ const visitorSchema = new mongoose.Schema<IVisitor>(
     },
     apartmentNumber: {
       type: String,
+      required: true,
+    },
+    residentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Resident",
       required: true,
     },
     image: {

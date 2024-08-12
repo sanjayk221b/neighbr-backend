@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { ServicesUseCase } from "../../use-cases/services.use-case";
-import { ServicesRepository } from "../repositories/mongo/services.repository";
+import { ServicesRepository } from "../repositories/mongo/service.repository";
 import { ServicesController } from "../../controllers/services.controller";
-import { residentAuth } from "../middlewares/resident-auth.middleware";
-import upload from "../middlewares/multer.middleware";
+import { residentAuth } from "@neighbr/common/dist/middlewares/resident-auth.middleware";
+import {upload} from "@neighbr/common"
 
 //respositories
 const servicesRepository = new ServicesRepository();

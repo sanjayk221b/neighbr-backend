@@ -2,10 +2,12 @@ import { IResident, ICaretaker } from "@/entities";
 import { AdminRepository } from "../infrastructure/repositories/mongo";
 import { JWT } from "../infrastructure/services/jwt";
 import { cloudinary } from "../infrastructure/services/cloudinary";
-import { sendResidentCreatedEvent } from "../events/kafka/producers/resident-created.producer";
-import { sendCaretakerCreatedEvent } from "../events/kafka/producers/caretaker-created.producer";
-import { sendResidentUpdatedEvent } from "../events/kafka/producers/resident-updated.producer";
-
+import {
+  sendResidentCreatedEvent,
+  sendResidentUpdatedEvent,
+  sendCaretakerCreatedEvent,
+  sendCaretakerUpdatedEvent,
+} from "@/events/kafka/producers"; 
 export class AdminUseCase {
   private readonly _adminRepository: AdminRepository;
   private readonly _jwt: JWT;
@@ -45,8 +47,8 @@ export class AdminUseCase {
     }
     const newResident = await this._adminRepository.addResident(data);
     if (newResident) {
-      await sendResidentCreatedEvent(data);
-      await sendResidentUpdatedEvent(newResident);
+      // await sendResidentCreatedEvent(data);
+      // await sendResidentUpdatedEvent(newResident);
     }
     return newResident;
   }
@@ -73,7 +75,11 @@ export class AdminUseCase {
       }
     }
     const newCaretaker = await this._adminRepository.addCaretaker(data);
-    if (newCaretaker) await sendCaretakerCreatedEvent(data);
+    if (newCaretaker) {
+      await sendCaretakerCreatedEvent(data);
+      await sendCaretakerUpdatedEvent(newCaretaker);
+    }
+
     return newCaretaker;
   }
 

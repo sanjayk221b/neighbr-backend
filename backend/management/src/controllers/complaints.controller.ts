@@ -48,13 +48,27 @@ export class ComplaintsController {
     }
   }
 
-  async getAllComplaints(
+  async getComplaintsByAdmin(
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> {
     try {
-      const complaints = await this._complaintsUseCase.getAllComplaints();
+      const complaints = await this._complaintsUseCase.getComplaintsByAdmin();
+      res.status(200).json(complaints);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getComplaintsByCaretaker(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const complaints =
+        await this._complaintsUseCase.getComplaintsByCaretaker();
       res.status(200).json(complaints);
     } catch (error) {
       next(error);
@@ -74,6 +88,4 @@ export class ComplaintsController {
       next(error);
     }
   }
-
-  
 }

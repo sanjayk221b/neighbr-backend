@@ -1,5 +1,5 @@
-import mongoose, { Schema, Document } from "mongoose";
-import {IResident} from "../../../../entities";
+import mongoose from "mongoose";
+import { IResident } from "@/entities";
 
 const residentSchema = new mongoose.Schema<IResident>(
   {
@@ -27,6 +27,10 @@ const residentSchema = new mongoose.Schema<IResident>(
       required: true,
     },
     isBlocked: {
+      type: Boolean,
+      default: false,
+    },
+    isAdmin: {
       type: Boolean,
       default: false,
     },

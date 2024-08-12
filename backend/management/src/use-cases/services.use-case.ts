@@ -1,5 +1,5 @@
 import { IService } from "@/entities";
-import { ServicesRepository } from "@/infrastructure/repositories/mongo/services.repository";
+import { ServicesRepository } from "@/infrastructure/repositories/mongo/service.repository";
 
 export class ServicesUseCase {
   private readonly _servicesRepository: ServicesRepository;

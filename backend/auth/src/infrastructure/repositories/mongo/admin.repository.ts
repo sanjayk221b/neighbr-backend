@@ -8,8 +8,10 @@ const SALT_ROUNDS = 10;
 
 export class AdminRepository implements IAdminRepository {
   async getResidents(): Promise<IResident[]> {
-    return Resident.find();
-  }
+    return Resident.find({
+      $or: [{ isAdmin: false }, { isAdmin: { $exists: false } }],
+    });
+  } 
 
   async addResident(resident: IResident): Promise<IResident> {
     const hashedPassword = await bcrypt.hash(resident.password, SALT_ROUNDS);

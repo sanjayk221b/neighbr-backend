@@ -1,4 +1,4 @@
 export * from "./resident.entity";
 export * from "./visitor.entity";
-export * from "./services.entity";
-export * from "./complaints.entity";
+export * from "./service.entity";
+export * from "./complaint.entity";
