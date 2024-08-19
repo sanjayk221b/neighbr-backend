@@ -7,7 +7,8 @@ import connectDB from "../repositories/mongo/connect";
 import adminRoutes from "../routes/admin.routes";
 import caretakerRoutes from "../routes/caretaker.routes";
 import residentRoutes from "../routes/resident.routes";
-import { errorHandler } from "@neighbr/common/dist/middlewares/errorHandler"
+import workerRoutes from "../routes/worker.routes";
+import { errorHandler } from "@neighbr/common";
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use(
 app.use("/api/auth/admin", adminRoutes);
 app.use("/api/auth/caretaker", caretakerRoutes);
 app.use("/api/auth/resident", residentRoutes);
+app.use("/api/auth/workers", workerRoutes);
 
 app.use(errorHandler);
 

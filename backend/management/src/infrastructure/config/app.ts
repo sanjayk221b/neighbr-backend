@@ -7,7 +7,11 @@ import connectDB from "../repositories/mongo/connect";
 import visitorRoutes from "../routes/visitor.routes";
 import serviceRoutes from "../routes/services.routes";
 import complaintRoutes from "../routes/complaints.routes";
-import { connectResidentUpdatedConsumer, disconnectResidentUpdatedConsumer } from "../../events/consumers/resident-updated.consumer";
+import workerRoutes from "../routes/worker.routes";
+import {
+  connectResidentUpdatedConsumer,
+  disconnectResidentUpdatedConsumer,
+} from "../../events/consumers/resident-updated.consumer";
 import { errorHandler } from "../middlewares/errorHandler";
 
 const app = express();
@@ -25,25 +29,15 @@ app.use(
   })
 );
 
-app.use('/api/auth', (req, res, next) => {
-  console.log('[Auth Service] Received request:', req.method, req.url);
-  console.log('[Auth Service] Request body:', req.body);
-  next();
-});
-
-app.get("/api/management", (req, res) => {
-  res.send("Server is running management 4002");
-});
-
-
 app.use("/api/management/visitors", visitorRoutes);
 app.use("/api/management/services", serviceRoutes);
 app.use("/api/management/complaints", complaintRoutes);
+app.use("/api/management/workers", workerRoutes);
 
 app.use(errorHandler);
 
-process.on('SIGINT', async () => {
-  await disconnectResidentUpdatedConsumer(); 
+process.on("SIGINT", async () => {
+  await disconnectResidentUpdatedConsumer();
   process.exit();
 });
 
