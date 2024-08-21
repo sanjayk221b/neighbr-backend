@@ -1,6 +1,6 @@
 import { IWorker } from "@/entities/worker.entity";
 import { IWorkerRepository } from "@/infrastructure/repositories/interfaces/worker-repository.interface";
-import S3Uploader, { IFile } from "@neighbr/common/dist/services/s3Bucket";
+import { S3Uploader, IFile } from "@neighbr/common";
 import { NotFoundError } from "@neighbr/common/dist/utils/error-handler";
 
 export class WorkerUseCase {

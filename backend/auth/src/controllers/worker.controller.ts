@@ -86,6 +86,7 @@ export class WorkerController {
     try {
       const { id } = req.params;
       const { isAvailable } = req.body;
+      console.log(req.body)
       if (typeof isAvailable !== "boolean")
         throw new BadRequestError("Invalid isAvailable value");
 

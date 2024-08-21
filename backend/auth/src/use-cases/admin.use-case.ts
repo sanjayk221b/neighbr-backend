@@ -47,8 +47,8 @@ export class AdminUseCase {
     }
     const newResident = await this._adminRepository.addResident(data);
     if (newResident) {
-      // await sendResidentCreatedEvent(data);
-      // await sendResidentUpdatedEvent(newResident);
+      await sendResidentCreatedEvent(data);
+      await sendResidentUpdatedEvent(newResident);
     }
     return newResident;
   }
