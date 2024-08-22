@@ -68,7 +68,7 @@ export class AdminUseCase {
     if (file) {
       try {
         const result = await cloudinary.uploader.upload(file.path);
-        data.imageUrl = result.secure_url;
+        data.image = result.secure_url;
       } catch (err) {
         console.error("Error uploading image to Cloudinary:", err);
         throw new Error("Image upload failed");
