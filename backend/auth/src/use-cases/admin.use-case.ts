@@ -76,8 +76,8 @@ export class AdminUseCase {
     }
     const newCaretaker = await this._adminRepository.addCaretaker(data);
     if (newCaretaker) {
-      await sendCaretakerCreatedEvent(data);
-      await sendCaretakerUpdatedEvent(newCaretaker);
+      // await sendCaretakerCreatedEvent(data);
+      // await sendCaretakerUpdatedEvent(newCaretaker);
     }
 
     return newCaretaker;

@@ -25,7 +25,7 @@ const caretakerSchema = new mongoose.Schema<ICaretaker>(
       type: Boolean,
       default: false,
     },
-    imageUrl: {
+    image: {
       type: String,
       default: "",
     },

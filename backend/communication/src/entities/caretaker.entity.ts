@@ -5,5 +5,5 @@ export interface ICaretaker {
   mobileNumber: string;
   password: string;
   isBlocked?: boolean;
-  imageUrl?: string;
+  image?: string;
 }

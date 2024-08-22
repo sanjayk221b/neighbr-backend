@@ -1,28 +1,38 @@
 import { Request, Response, NextFunction } from "express";
 import { CaretakerUseCase } from "../use-cases/caretaker.use-case";
+import { ResponseCreator, statusCodes } from "@neighbr/common";
+import { UnauthorizedError, BadRequestError } from "@neighbr/common";
 
 export class CaretakerController {
   private readonly _caretakerUseCase: CaretakerUseCase;
 
-  constructor(CaretakerUseCase: CaretakerUseCase) {
-    this._caretakerUseCase = CaretakerUseCase;
+  constructor(caretakerUseCase: CaretakerUseCase) {
+    this._caretakerUseCase = caretakerUseCase;
   }
 
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { email, password } = req.body;
-      const token = await this._caretakerUseCase.login(email, password);
+      const result = await this._caretakerUseCase.login(email, password);
 
-      if (token) {
+      if (result) {
+        const { token, caretaker } = result;
+
         res.cookie("neighbr-caretaker-token", token, {
           httpOnly: true,
           secure: true,
           maxAge: 3600000 + 60000,
           sameSite: "none",
         });
-        res.status(200).json({ message: "Login successful" });
+
+        const responseCreator = new ResponseCreator()
+          .setData({ token, caretaker })
+          .setMessage("Login successful")
+          .setStatusCode(statusCodes.OK);
+
+        responseCreator.sendResponse(res);
       } else {
-        res.status(401).json({ message: "Invalid email or password" });
+        throw new UnauthorizedError("Invalid email or password");
       }
     } catch (error) {
       next(error);
@@ -36,7 +46,35 @@ export class CaretakerController {
         secure: true,
         expires: new Date(0),
       });
-      res.status(200).json({ message: "Logout successful" });
+
+      const responseCreator = new ResponseCreator()
+        .setMessage("Logout successful")
+        .setStatusCode(statusCodes.OK);
+
+      responseCreator.sendResponse(res);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async changePassword(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { email, currentPassword, newPassword } = req.body;
+      await this._caretakerUseCase.changeCaretakerPassword(
+        email,
+        currentPassword,
+        newPassword
+      );
+
+      const responseCreator = new ResponseCreator()
+        .setMessage("Password changed successfully")
+        .setStatusCode(statusCodes.OK);
+
+      responseCreator.sendResponse(res);
     } catch (error) {
       next(error);
     }
