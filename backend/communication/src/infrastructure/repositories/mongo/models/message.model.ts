@@ -19,12 +19,12 @@ const messageSchema = new Schema<IMessage>(
     },
     mediaType: {
       type: String,
-      enum: ["image", "video", "document", "audio", "none"],
+      enum: ["image", "document", "none"],
       default: "none",
     },
     mediaUrl: {
       type: String,
-      default: "",
+      default: null,
     },
     conversationId: {
       type: Schema.Types.ObjectId,

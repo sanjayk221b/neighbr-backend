@@ -7,8 +7,19 @@ export class ChatController {
 
   async sendMessage(req: Request, res: Response, next: NextFunction) {
     try {
-      const messageData: IMessage = req.body;
-      const newMessage = await this.chatUseCase.sendMessage(messageData);
+      const { content, conversationId, senderId, senderType } = req.body;
+      console.log(req.body);
+      console.log(req.file);
+      const file = req.file;
+
+      const messageData: Partial<IMessage> = {
+        content,
+        conversationId,
+        senderId,
+        senderType,
+      };
+
+      const newMessage = await this.chatUseCase.sendMessage(messageData, file);
       res.status(201).json(newMessage);
     } catch (error) {
       next(error);

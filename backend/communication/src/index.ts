@@ -1,4 +1,4 @@
-import { app, httpServer, socketService } from "@/infrastructure/config/app";
+import { httpServer } from "@/infrastructure/config/app";
 
 const PORT = process.env.PORT;
 

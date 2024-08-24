@@ -4,7 +4,7 @@ config();
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { errorHandler } from "../middlewares/errorHandler";
+import { errorHandler } from "@neighbr/common";
 import connectDB from "@/infrastructure/repositories/mongo/connect";
 import {
   connectResidentUpdatedConsumer,
@@ -19,7 +19,7 @@ import { SocketService } from "../services/socket";
 const app = express();
 const httpServer = http.createServer(app);
 // Create an instance of SocketService
-const socketService = new SocketService(); 
+const socketService = new SocketService();
 
 // Initialize Socket.IO
 socketService.initialize(httpServer);
