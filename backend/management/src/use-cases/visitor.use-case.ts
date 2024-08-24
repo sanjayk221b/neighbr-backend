@@ -29,12 +29,20 @@ export class VisitorUseCase {
     return newVisitor;
   }
 
-  async getVisitors(): Promise<IVisitor[]> {
-    return await this._visitorRepository.getVisitors();
+  async getVisitors(page: number, limit: number): Promise<IVisitor[]> {
+    return await this._visitorRepository.getVisitors(page, limit);
   }
 
-  async getVisitorsByResidentId(residentId: string) {
-    return await this._visitorRepository.getVisitorsByResident(residentId);
+  async getVisitorsByResidentId(
+    residentId: string,
+    page: number,
+    limit: number
+  ): Promise<{ data: IVisitor[]; totalPages: number }> {
+    return await this._visitorRepository.getVisitorsByResident(
+      residentId,
+      page,
+      limit
+    );
   }
 
   async updateVisitor(id: string, data: IVisitor): Promise<IVisitor> {

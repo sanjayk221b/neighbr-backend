@@ -10,8 +10,9 @@ export class VisitorRepository implements IVisitorRepository {
     return newVisitor;
   }
 
-  async getVisitors(): Promise<IVisitor[]> {
-    return Visitor.find();
+  async getVisitors(page: number, limit: number): Promise<IVisitor[]> {
+    const skip = (page - 1) * limit;
+    return VisitorModel.find().skip(skip).limit(limit).exec();
   }
 
   async updateVisitor(id: string, visitor: IVisitor): Promise<IVisitor | null> {
@@ -21,7 +22,20 @@ export class VisitorRepository implements IVisitorRepository {
     return updatedVisitor;
   }
 
-  async getVisitorsByResident(residentId: string): Promise<IVisitor[]> {
-    return await Visitor.find({ residentId });
+  async getVisitorsByResident(
+    residentId: string,
+    page: number,
+    limit: number
+  ): Promise<{ data: IVisitor[]; totalPages: number }> {
+    const skip = (page - 1) * limit;
+    const [data, total] = await Promise.all([
+      VisitorModel.find({ residentId }).skip(skip).limit(limit).exec(),
+      VisitorModel.countDocuments({ residentId }),
+    ]);
+
+    return {
+      data,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 }
