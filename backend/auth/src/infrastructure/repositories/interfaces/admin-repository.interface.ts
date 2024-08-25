@@ -8,4 +8,5 @@ export interface IAdminRepository {
   getCaretakers(): Promise<ICaretaker[]>;
   addCaretaker(caretaker: ICaretaker): Promise<ICaretaker>;
   blockUnblockCaretakers(caretakerId: string): Promise<ICaretaker | null>;
+  findAdminByEmail(email: string): Promise<IResident | null>;
 }
