@@ -26,7 +26,9 @@ export class VisitorController {
 
   async getVisitors(req: Request, res: Response, next: NextFunction) {
     try {
-      const visitors = await this._visitorUseCase.getVisitors();
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const visitors = await this._visitorUseCase.getVisitors(page, limit);
       res.status(200).json(visitors);
     } catch (error) {
       next(error);
@@ -36,9 +38,12 @@ export class VisitorController {
   async getVisitorsByResidentId(req: any, res: Response, next: NextFunction) {
     try {
       const residentId = req.residentId;
-      console.log("visitors residentId", req.residentId);
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
       const visitors = await this._visitorUseCase.getVisitorsByResidentId(
-        residentId
+        residentId,
+        page,
+        limit
       );
 
       res.status(200).json(visitors);

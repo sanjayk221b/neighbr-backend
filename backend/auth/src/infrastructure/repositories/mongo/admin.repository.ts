@@ -11,7 +11,7 @@ export class AdminRepository implements IAdminRepository {
     return Resident.find({
       $or: [{ isAdmin: false }, { isAdmin: { $exists: false } }],
     });
-  } 
+  }
 
   async addResident(resident: IResident): Promise<IResident> {
     const hashedPassword = await bcrypt.hash(resident.password, SALT_ROUNDS);
@@ -53,5 +53,8 @@ export class AdminRepository implements IAdminRepository {
       { isBlocked: !caretaker.isBlocked },
       { new: true }
     );
+  }
+  async findAdminByEmail(email: string): Promise<IResident | null> {
+    return await Resident.findOne({ email, isAdmin: true });
   }
 }

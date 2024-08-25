@@ -5,7 +5,7 @@ export interface IMessage {
   senderId: string;
   senderType: "resident" | "caretaker" | "admin";
   content: string;
-  mediaType: "image" | "video" | "document" | "audio" | "none";
+  mediaType: "image" | "document" | "none";
   mediaUrl?: string;
   conversationId: ObjectId;
 }

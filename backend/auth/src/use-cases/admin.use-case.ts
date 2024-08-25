@@ -2,12 +2,13 @@ import { IResident, ICaretaker } from "@/entities";
 import { AdminRepository } from "../infrastructure/repositories/mongo";
 import { JWT } from "../infrastructure/services/jwt";
 import { cloudinary } from "../infrastructure/services/cloudinary";
+import bcrypt from "bcrypt";
 import {
   sendResidentCreatedEvent,
   sendResidentUpdatedEvent,
   sendCaretakerCreatedEvent,
   sendCaretakerUpdatedEvent,
-} from "@/events/kafka/producers"; 
+} from "@/events/kafka/producers";
 export class AdminUseCase {
   private readonly _adminRepository: AdminRepository;
   private readonly _jwt: JWT;
@@ -17,15 +18,48 @@ export class AdminUseCase {
     this._jwt = JWT;
   }
 
-  async login(email: string, password: string): Promise<string | null> {
-    const adminEmail = process.env.ADMIN_EMAIL;
-    const adminPassword = process.env.ADMIN_PASSWORD;
+  async login(
+    email: string,
+    password: string
+  ): Promise<{
+    message: string;
+    token?: string;
+    admin?: Partial<IResident>;
+  }> {
+    const admin = await this._adminRepository.findAdminByEmail(email);
 
-    if (email === adminEmail && password === adminPassword) {
-      const token = this._jwt.generateToken({ email, role: "admin" });
-      return token;
+    if (!admin) {
+      return { message: "Admin not found" };
     }
-    return null;
+
+    const passwordMatch = await bcrypt.compare(password, admin.password);
+    if (!passwordMatch) {
+      return { message: "Invalid password" };
+    }
+
+    const token = this._jwt.generateToken({
+      id: admin._id,
+      role: "admin",
+    });
+
+    const adminDetails: Partial<IResident> = {
+      _id: admin._id,
+      name: admin.name,
+      email: admin.email,
+      mobileNumber: admin.mobileNumber,
+      apartmentNumber: admin.apartmentNumber,
+      isBlocked: admin.isBlocked,
+      isAdmin: admin.isAdmin,
+      hasVehicle: admin.hasVehicle,
+      vehicles: admin.vehicles,
+      image: admin.image,
+    };
+
+    return {
+      message: "Login successful",
+      token: token,
+      admin: adminDetails,
+    };
   }
 
   async getResidents(): Promise<IResident[]> {

@@ -30,7 +30,7 @@ export class ChatRepository implements IChatRepository {
           return {
             ...participant,
             name: caretaker?.name,
-            image: caretaker?.imageUrl,
+            image: caretaker?.image,
           };
         }
         return participant;
@@ -87,7 +87,7 @@ export class ChatRepository implements IChatRepository {
               return {
                 ...participant,
                 name: caretaker?.name,
-                image: caretaker?.imageUrl,
+                image: caretaker?.image,
               };
             }
             return participant;
