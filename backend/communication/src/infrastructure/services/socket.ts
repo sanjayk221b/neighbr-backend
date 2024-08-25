@@ -36,6 +36,21 @@ export class SocketService {
         this._io.in(message.conversationId).emit("newMessage", message);
       });
 
+      socket.on(
+        "videoCallInvitation",
+        (data: {
+          conversationId: string;
+          callerId: string;
+          roomID: string;
+        }) => {
+          socket.to(data.conversationId).emit("videoCallInvitation", data);
+        }
+      );
+
+      socket.on("videoCallRejected", (data: { callerId: string }) => {
+        socket.to(data.callerId).emit("videoCallRejected");
+      });
+
       socket.on("disconnect", () => {
         console.log("Client disconnected");
       });
