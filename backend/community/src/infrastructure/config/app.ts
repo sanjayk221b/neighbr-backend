@@ -11,7 +11,7 @@ import {
   connectResidentUpdatedConsumer,
   disconnectResidentUpdatedConsumer,
 } from "@/events/consumers";
-import requestLoggerMiddleware from "@neighbr/common/dist/middlewares/requestLogger.middleware";
+import requestLoggerMiddleware from "@neighbr/common/dist/middlewares/request-logger.middleware";
 
 const app = express();
 

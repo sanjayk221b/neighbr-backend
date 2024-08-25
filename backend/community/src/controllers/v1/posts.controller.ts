@@ -1,16 +1,22 @@
 import { Request, Response, NextFunction } from "express";
 import { PostsUseCase } from "@/use-cases/posts.use-case";
-import { IPost } from "@/entities";
 import S3Uploader, { IFile } from "@/infrastructure/services/s3Bucket";
-import { statusCodes } from "@neighbr/common/dist/enums/statusCodes";
+import { ResponseCreator, statusCodes } from "@neighbr/common";
+import { ReportsUseCase } from "@/use-cases";
 
 export class PostsController {
   private readonly _postsUseCase: PostsUseCase;
   private readonly _s3Uploader: S3Uploader;
+  private readonly _reportsUseCase: ReportsUseCase;
 
-  constructor(postsUseCase: PostsUseCase, s3Uploader: S3Uploader) {
+  constructor(
+    postsUseCase: PostsUseCase,
+    s3Uploader: S3Uploader,
+    reportsUseCase: ReportsUseCase
+  ) {
     this._postsUseCase = postsUseCase;
     this._s3Uploader = s3Uploader;
+    this._reportsUseCase = reportsUseCase;
   }
 
   async createPosts(req: Request, res: Response, next: NextFunction) {
@@ -18,9 +24,11 @@ export class PostsController {
       const currentUser = req.currentUser;
 
       if (!currentUser) {
-        return res
-          .status(statusCodes.UNAUTHORIZED)
-          .json({ message: "Unauthorized" });
+        const response = new ResponseCreator()
+          .setStatusCode(statusCodes.UNAUTHORIZED)
+          .setMessage("Unauthorized")
+          .buildResponse();
+        return res.status(response.statusCode).json(response);
       }
 
       const post: any = {
@@ -32,8 +40,6 @@ export class PostsController {
       };
 
       if (req.files) {
-        console.log("Files to upload:", req.files);
-
         const filesToUpload: IFile[] = (req.files as Express.Multer.File[]).map(
           (file) => ({
             fieldname: file.fieldname,
@@ -50,8 +56,6 @@ export class PostsController {
         );
 
         post.images = uploadedImageNames;
-      } else {
-        console.log("No files uploaded, creating text-only post.");
       }
 
       const createdPost = await this._postsUseCase.createPost(post);
@@ -60,21 +64,25 @@ export class PostsController {
         const signedUrls = await this._s3Uploader.getSignedImageUrls(
           createdPost.images
         );
-
         createdPost.images = signedUrls;
       }
 
-      return res.status(statusCodes.CREATED).json(createdPost);
+      const response = new ResponseCreator()
+        .setData(createdPost)
+        .setStatusCode(statusCodes.CREATED)
+        .setMessage("Post created successfully");
+
+      response.sendResponse(res);
     } catch (error) {
       next(error);
     }
   }
+
   async getPosts(req: Request, res: Response, next: NextFunction) {
     try {
       const posts = await this._postsUseCase.getPosts();
 
       const imageNames = posts.flatMap((post) => post.images || []);
-
       const imageUrls = await this._s3Uploader.getSignedImageUrls(imageNames);
 
       const postsWithUrls = await Promise.all(
@@ -88,7 +96,68 @@ export class PostsController {
         })
       );
 
-      return res.status(statusCodes.OK).json(postsWithUrls);
+      const response = new ResponseCreator()
+        .setData(postsWithUrls)
+        .setStatusCode(statusCodes.OK)
+        .setMessage("Posts fetched successfully");
+
+      response.sendResponse(res);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async reportPost(req: Request, res: Response, next: NextFunction) {
+    try {
+      const currentUser = req.currentUser;
+
+      if (!currentUser) {
+        const response = new ResponseCreator()
+          .setStatusCode(statusCodes.UNAUTHORIZED)
+          .setMessage("Unauthorized")
+          .buildResponse();
+        return res.status(response.statusCode).json(response);
+      }
+
+      const { postId } = req.params;
+      const { reason } = req.body;
+
+      const report = {
+        entityId: postId,
+        entityType: "Post",
+        reporterId: currentUser.id,
+        postId: postId,
+        reason,
+      };
+
+      const createdReport = await this._reportsUseCase.createReport(report);
+
+      const response = new ResponseCreator()
+        .setData(createdReport)
+        .setStatusCode(statusCodes.CREATED)
+        .setMessage("Post reported successfully");
+
+      response.sendResponse(res);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getReports(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { page = 1, limit = 10 } = req.query;
+
+      const reports = await this._reportsUseCase.getReports(
+        Number(page),
+        Number(limit)
+      );
+
+      const response = new ResponseCreator()
+        .setData(reports)
+        .setStatusCode(statusCodes.OK)
+        .setMessage("Reports fetched successfully");
+
+      response.sendResponse(res);
     } catch (error) {
       next(error);
     }

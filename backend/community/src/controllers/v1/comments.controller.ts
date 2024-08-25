@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { CommentsUseCase } from "@/use-cases/comments.use-case";
 import { IComment } from "@/entities";
-import { statusCodes } from "@neighbr/common/dist/enums/statusCodes";
+import { statusCodes } from "@neighbr/common";
 
 export class CommentsController {
   private readonly _commentsUseCase: CommentsUseCase;
