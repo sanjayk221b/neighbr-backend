@@ -1,7 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import { PostsUseCase } from "@/use-cases/posts.use-case";
 import S3Uploader, { IFile } from "@/infrastructure/services/s3Bucket";
-import { ResponseCreator, statusCodes } from "@neighbr/common";
+import {
+  ResponseCreator,
+  statusCodes,
+  UnauthorizedError,
+  NotFoundError,
+} from "@neighbr/common";
 import { ReportsUseCase } from "@/use-cases";
 
 export class PostsController {
@@ -24,11 +29,7 @@ export class PostsController {
       const currentUser = req.currentUser;
 
       if (!currentUser) {
-        const response = new ResponseCreator()
-          .setStatusCode(statusCodes.UNAUTHORIZED)
-          .setMessage("Unauthorized")
-          .buildResponse();
-        return res.status(response.statusCode).json(response);
+        throw new UnauthorizedError("Unauthorized");
       }
 
       const post: any = {
@@ -107,16 +108,41 @@ export class PostsController {
     }
   }
 
+  async getPostById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { postId } = req.params;
+      const post = await this._postsUseCase.getPostById(postId);
+
+      if (!post) {
+        throw new NotFoundError("Post not found");
+      }
+
+      if (post.images && post.images.length > 0) {
+        const signedUrls = await this._s3Uploader.getSignedImageUrls(
+          post.images
+        );
+        post.images = signedUrls;
+      }
+
+      const postsWithUrls = [post];
+
+      const response = new ResponseCreator()
+        .setData(postsWithUrls)
+        .setStatusCode(statusCodes.OK)
+        .setMessage("Post fetched successfully");
+
+      response.sendResponse(res);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async reportPost(req: Request, res: Response, next: NextFunction) {
     try {
       const currentUser = req.currentUser;
 
       if (!currentUser) {
-        const response = new ResponseCreator()
-          .setStatusCode(statusCodes.UNAUTHORIZED)
-          .setMessage("Unauthorized")
-          .buildResponse();
-        return res.status(response.statusCode).json(response);
+        throw new UnauthorizedError("Unauthorized");
       }
 
       const { postId } = req.params;
@@ -147,6 +173,7 @@ export class PostsController {
     try {
       const { page = 1, limit = 10 } = req.query;
 
+      console.log(req.query);
       const reports = await this._reportsUseCase.getReports(
         Number(page),
         Number(limit)

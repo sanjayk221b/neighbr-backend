@@ -10,4 +10,8 @@ export class PostsUseCase {
   async getPosts(): Promise<IPost[]> {
     return await this._postsRepository.getPosts();
   }
+
+  async getPostById(id: string): Promise<IPost | null> {
+    return await this._postsRepository.getPostById(id);
+  }
 }

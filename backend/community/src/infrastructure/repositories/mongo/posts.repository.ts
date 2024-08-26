@@ -16,4 +16,9 @@ export class PostsRepository implements IPostsRepository {
     console.log(posts);
     return posts;
   }
+  
+  async getPostById(id: string): Promise<IPost | null> {
+    const post = await Post.findById(id).populate("author.id");
+    return post;
+  }
 }
