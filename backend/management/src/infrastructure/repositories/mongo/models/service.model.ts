@@ -31,7 +31,7 @@ const serviceSchema = new mongoose.Schema<IService>(
     },
     solvedDate: {
       type: Date,
-      default: null, 
+      default: null,
     },
     imageUrl: {
       type: String,
@@ -42,6 +42,10 @@ const serviceSchema = new mongoose.Schema<IService>(
       enum: ["pending", "in-progress", "completed"],
       default: "pending",
       required: true,
+    },
+    feedback: {
+      type: String,
+      default: "",
     },
   },
   {

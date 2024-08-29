@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { ServicesUseCase } from "@/use-cases";
-import { IService } from "@/entities";
 
 export class ServicesController {
   private readonly _servicesUseCase: ServicesUseCase;
@@ -44,10 +43,15 @@ export class ServicesController {
     next: NextFunction
   ) {
     try {
+      const { page = 1, limit = 10, search = "" } = req.query;
       const residentId = req.residentId;
       const serviceRequests =
-        await this._servicesUseCase.getServiceRequestsByResidentId(residentId);
-      console.log("service requests residentId ");
+        await this._servicesUseCase.getServiceRequestsByResidentId(
+          residentId,
+          parseInt(page as string),
+          parseInt(limit as string),
+          search as string
+        );
 
       res.status(200).json(serviceRequests);
     } catch (error: any) {
