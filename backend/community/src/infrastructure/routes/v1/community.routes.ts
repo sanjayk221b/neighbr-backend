@@ -31,7 +31,7 @@ const postsController = new PostsController(
 const commentsController = new CommentsController(commentsUseCase);
 
 const router = Router();
-  
+
 // Post Routes
 router.post(
   "/posts/create",
@@ -43,8 +43,12 @@ router.get("/posts", (req, res, next) =>
   postsController.getPosts(req, res, next)
 );
 
-router.get("/posts/:postId", (req, res, next) =>
-  postsController.getPostById(req, res, next)
+// router.get("/posts/:postId", (req, res, next) =>
+//   postsController.getPostById(req, res, next)
+// );
+
+router.delete("/posts/:postId/delete", (req, res, next) =>
+  postsController.deletePost(req, res, next)
 );
 
 router.post("/posts/:postId/reports/create", currentUser, (req, res, next) =>

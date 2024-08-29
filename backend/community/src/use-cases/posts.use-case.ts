@@ -14,4 +14,8 @@ export class PostsUseCase {
   async getPostById(id: string): Promise<IPost | null> {
     return await this._postsRepository.getPostById(id);
   }
+
+  async deletePost(id: string): Promise<boolean> {
+    return await this._postsRepository.deletePost(id);
+  }
 }

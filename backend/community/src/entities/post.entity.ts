@@ -9,4 +9,5 @@ export interface IPost extends Document {
   images?: string[];
   likes: Number;
   comments: Number;
+  isDeleted?: boolean;
 }

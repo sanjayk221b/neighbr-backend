@@ -189,4 +189,24 @@ export class PostsController {
       next(error);
     }
   }
+
+  async deletePost(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { postId } = req.params;
+
+      const postDeleted = await this._postsUseCase.deletePost(postId);
+
+      if (!postDeleted) {
+        throw new NotFoundError("Post not found or could not be deleted");
+      }
+
+      const response = new ResponseCreator()
+        .setStatusCode(statusCodes.OK)
+        .setMessage("Post deleted successfully");
+
+      response.sendResponse(res);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
