@@ -10,10 +10,23 @@ export class PostsRepository implements IPostsRepository {
   }
 
   async getPosts(): Promise<IPost[]> {
-    const posts = await Post.find()
+    const posts = await Post.find({ isDeleted: false })
       .populate("author.id")
       .sort({ createdAt: -1 });
-    console.log(posts);
     return posts;
+  }
+
+  async getPostById(id: string): Promise<IPost | null> {
+    const post = await Post.findById(id).populate("author.id");
+    return post;
+  }
+
+  async deletePost(id: string): Promise<boolean> {
+    const result = await Post.findByIdAndUpdate(
+      id,
+      { isDeleted: true },
+      { new: true }
+    );
+    return result !== null;
   }
 }

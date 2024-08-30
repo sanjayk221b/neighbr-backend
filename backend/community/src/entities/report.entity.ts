@@ -1,7 +1,7 @@
-import { ObjectId } from "mongodb";
+import { ObjectId } from "mongoose";
 
 export interface IReport {
-  id?: ObjectId;
+  _id?: ObjectId | string;
   postId: ObjectId | string;
   reporterId: ObjectId | string;
   reason: string;

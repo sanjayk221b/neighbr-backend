@@ -25,13 +25,30 @@ export class ServicesUseCase {
     return await this._servicesRepository.getRequests();
   }
 
-  async getServiceRequestsByResidentId(residentId: string) {
-    return await this._servicesRepository.getRequestsByResidentId(residentId);
+  async getServiceRequestsByResidentId(
+    residentId: string,
+    page: number,
+    limit: number,
+    search: string
+  ) {
+    return await this._servicesRepository.getRequestsByResidentId(
+      residentId,
+      page,
+      limit,
+      search
+    );
   }
 
-  async updateServiceRequests(serviceId: string, updateData: Partial<IService>) {
+  async updateServiceRequests(
+    serviceId: string,
+    updateData: Partial<IService>
+  ) {
     try {
-      const updatedService = await this._servicesRepository.updateServiceRequests(serviceId, updateData);
+      const updatedService =
+        await this._servicesRepository.updateServiceRequests(
+          serviceId,
+          updateData
+        );
       return updatedService;
     } catch (error: any) {
       throw new Error(`Failed to update service request: ${error.message}`);

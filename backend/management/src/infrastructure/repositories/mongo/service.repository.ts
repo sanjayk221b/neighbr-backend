@@ -22,9 +22,21 @@ export class ServicesRepository implements IServiceRepository {
     }
   }
 
-  async getRequestsByResidentId(residentId: string): Promise<IService[]> {
+  async getRequestsByResidentId(
+    residentId: string,
+    page: number,
+    limit: number,
+    search: string
+  ): Promise<IService[]> {
     try {
-      return await Service.find({ residentId });
+      const query: any = { residentId };
+      if (search) {
+        query.$text = { $search: search };
+      }
+
+      const skip = (page - 1) * limit;
+
+      return await Service.find(query).skip(skip).limit(limit);
     } catch (error: any) {
       throw new Error(
         `Failed to get requests by resident ID: ${error.message}`

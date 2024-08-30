@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { JWT } from "../services/jwt";
-import { AdminRepository } from "../repositories";
+import { CaretakerRepository, ResidentRepository } from "../repositories";
 import { AdminController } from "../../controllers/admin.controller";
 import { AdminUseCase } from "../../use-cases/admin.use-case";
 import {upload} from "@neighbr/common";
@@ -9,10 +9,11 @@ import {upload} from "@neighbr/common";
 const jwt = new JWT();
 
 //repositories
-const adminRepository = new AdminRepository();
+const residentRepository = new ResidentRepository();
+const caretakerRepository = new CaretakerRepository();
 
 //usecases
-const adminUseCase = new AdminUseCase(adminRepository, jwt);
+const adminUseCase = new AdminUseCase(residentRepository, caretakerRepository, jwt);
 
 //controllers
 const adminController = new AdminController(adminUseCase);
