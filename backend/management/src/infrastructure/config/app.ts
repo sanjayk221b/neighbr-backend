@@ -8,6 +8,7 @@ import visitorRoutes from "../routes/visitor.routes";
 import serviceRoutes from "../routes/services.routes";
 import complaintRoutes from "../routes/complaints.routes";
 import workerRoutes from "../routes/worker.routes";
+import announcementRoutes from "../routes/announcements.routes";
 import {
   connectResidentUpdatedConsumer,
   disconnectResidentUpdatedConsumer,
@@ -33,6 +34,7 @@ app.use("/api/management/visitors", visitorRoutes);
 app.use("/api/management/services", serviceRoutes);
 app.use("/api/management/complaints", complaintRoutes);
 app.use("/api/management/workers", workerRoutes);
+app.use("/api/management/announcements", announcementRoutes);
 
 app.use(errorHandler);
 
