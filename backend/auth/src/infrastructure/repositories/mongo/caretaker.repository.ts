@@ -20,4 +20,29 @@ export class CaretakerRepository implements ICaretakerRepository {
       { $set: { password: hashedPassword } }
     );
   }
+  async getCaretakers(): Promise<ICaretaker[]> {
+    return Caretaker.find();
+  }
+
+  async addCaretaker(caretaker: ICaretaker): Promise<ICaretaker> {
+    const hashedPassword = await bcrypt.hash(caretaker.password, SALT_ROUNDS);
+    const newCaretaker = new Caretaker({
+      ...caretaker,
+      password: hashedPassword,
+    });
+    return await newCaretaker.save();
+  }
+
+  async blockUnblockCaretakers(
+    caretakerId: string
+  ): Promise<ICaretaker | null> {
+    const caretaker = await Caretaker.findById(caretakerId);
+    if (!caretaker) return null;
+
+    return await Caretaker.findByIdAndUpdate(
+      caretakerId,
+      { isBlocked: !caretaker.isBlocked },
+      { new: true }
+    );
+  }
 }

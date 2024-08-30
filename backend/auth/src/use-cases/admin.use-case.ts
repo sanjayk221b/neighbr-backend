@@ -1,5 +1,8 @@
 import { IResident, ICaretaker } from "@/entities";
-import { AdminRepository } from "../infrastructure/repositories/mongo";
+import {
+  CaretakerRepository,
+  ResidentRepository,
+} from "../infrastructure/repositories/mongo";
 import { JWT } from "../infrastructure/services/jwt";
 import { cloudinary } from "../infrastructure/services/cloudinary";
 import bcrypt from "bcrypt";
@@ -10,12 +13,18 @@ import {
   sendCaretakerUpdatedEvent,
 } from "@/events/kafka/producers";
 export class AdminUseCase {
-  private readonly _adminRepository: AdminRepository;
+  private readonly _residentRepository: ResidentRepository;
+  private readonly _caretakerRepository: CaretakerRepository;
   private readonly _jwt: JWT;
 
-  constructor(AdminRepository: AdminRepository, JWT: JWT) {
-    this._adminRepository = AdminRepository;
-    this._jwt = JWT;
+  constructor(
+    residentRepository: ResidentRepository,
+    caretakerRepository: CaretakerRepository,
+    jwt: JWT
+  ) {
+    this._residentRepository = residentRepository;
+    this._caretakerRepository = caretakerRepository;
+    this._jwt = jwt;
   }
 
   async login(
@@ -26,7 +35,7 @@ export class AdminUseCase {
     token?: string;
     admin?: Partial<IResident>;
   }> {
-    const admin = await this._adminRepository.findAdminByEmail(email);
+    const admin = await this._residentRepository.findAdminByEmail(email);
 
     if (!admin) {
       return { message: "Admin not found" };
@@ -63,7 +72,7 @@ export class AdminUseCase {
   }
 
   async getResidents(): Promise<IResident[]> {
-    return await this._adminRepository.getResidents();
+    return await this._residentRepository.getResidents();
   }
 
   async addResident(
@@ -73,13 +82,12 @@ export class AdminUseCase {
     if (file) {
       try {
         const result = await cloudinary.uploader.upload(file.path);
-        data.image = result.secure_url;
+        data.image = result.secure_url; 
       } catch (err) {
-        console.error("Error uploading image to Cloudinary:", err);
         throw new Error("Image upload failed");
       }
     }
-    const newResident = await this._adminRepository.addResident(data);
+    const newResident = await this._residentRepository.addResident(data);
     if (newResident) {
       await sendResidentCreatedEvent(data);
       await sendResidentUpdatedEvent(newResident);
@@ -88,11 +96,11 @@ export class AdminUseCase {
   }
 
   async blockUnblockResident(residentId: string) {
-    return await this._adminRepository.blockUnblockResident(residentId);
+    return await this._residentRepository.blockUnblockResident(residentId);
   }
 
   async getCaretakers(): Promise<ICaretaker[]> {
-    return await this._adminRepository.getCaretakers();
+    return await this._caretakerRepository.getCaretakers();
   }
 
   async addCaretaker(
@@ -104,20 +112,19 @@ export class AdminUseCase {
         const result = await cloudinary.uploader.upload(file.path);
         data.image = result.secure_url;
       } catch (err) {
-        console.error("Error uploading image to Cloudinary:", err);
         throw new Error("Image upload failed");
       }
     }
-    const newCaretaker = await this._adminRepository.addCaretaker(data);
+    const newCaretaker = await this._caretakerRepository.addCaretaker(data);
     if (newCaretaker) {
-      // await sendCaretakerCreatedEvent(data);
-      // await sendCaretakerUpdatedEvent(newCaretaker);
+      await sendCaretakerCreatedEvent(data);
+      await sendCaretakerUpdatedEvent(newCaretaker);
     }
 
     return newCaretaker;
   }
 
   async blockUnblockCaretaker(caretakerId: string) {
-    return await this._adminRepository.blockUnblockCaretakers(caretakerId);
+    return await this._caretakerRepository.blockUnblockCaretakers(caretakerId);
   }
 }
