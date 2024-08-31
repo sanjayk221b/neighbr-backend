@@ -1,5 +1,5 @@
 import kafka from "../index";
-import { sendEmail } from "../../../services/email.service";
+import { sendEmail } from "../../../infrastructure/services/email.service";
 
 const consumer = kafka.consumer({
   groupId: "notification-resident-created-group",

@@ -1,7 +1,4 @@
 import app from "@/infrastructure/config/app";
+import { createServer } from "@neighbr/common";
 
-const PORT = process.env.PORT;
-
-app.listen(PORT, () =>
-  console.log(`[ SERVICE :: AUTH SERVICE] AUTH service is listening on http://localhost:${PORT}`)
-);
+createServer({ app });
