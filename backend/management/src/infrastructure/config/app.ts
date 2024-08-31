@@ -13,7 +13,8 @@ import {
   connectResidentUpdatedConsumer,
   disconnectResidentUpdatedConsumer,
 } from "../../events/consumers/resident-updated.consumer";
-import { errorHandler } from "../middlewares/errorHandler";
+import { errorHandler } from "@neighbr/common";
+import morgan from "morgan";
 
 const app = express();
 
@@ -29,6 +30,8 @@ app.use(
     credentials: true,
   })
 );
+
+app.use(morgan("dev"));
 
 app.use("/api/management/visitors", visitorRoutes);
 app.use("/api/management/services", serviceRoutes);

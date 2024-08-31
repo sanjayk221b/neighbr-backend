@@ -65,11 +65,6 @@ const routes = [
   },
 ];
 
-app.use((req, res, next) => {
-  console.log("[Gateway] Request body:", req.body);
-  next();
-});
-
 // Proxy setup for routes
 routes.forEach((route) => {
   if (typeof route.target === "string") {
