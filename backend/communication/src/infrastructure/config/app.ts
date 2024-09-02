@@ -1,6 +1,3 @@
-import { config } from "dotenv";
-config();
-
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -18,6 +15,7 @@ import { SocketService } from "../services/socket";
 
 const app = express();
 const httpServer = http.createServer(app);
+
 // Create an instance of SocketService
 const socketService = new SocketService();
 

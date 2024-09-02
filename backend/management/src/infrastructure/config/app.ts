@@ -1,5 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -13,8 +11,9 @@ import {
   connectResidentUpdatedConsumer,
   disconnectResidentUpdatedConsumer,
 } from "../../events/consumers/resident-updated.consumer";
-import { errorHandler } from "@neighbr/common";
-import morgan from "morgan";
+import { errorHandler, loadEnv, requestLogger } from "@neighbr/common";
+
+const { CLIENT_URL } = loadEnv(["CLIENT_URL"]);
 
 const app = express();
 
@@ -26,12 +25,12 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: CLIENT_URL,
     credentials: true,
   })
 );
 
-app.use(morgan("dev"));
+app.use(requestLogger);
 
 app.use("/api/management/visitors", visitorRoutes);
 app.use("/api/management/services", serviceRoutes);

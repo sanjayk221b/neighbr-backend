@@ -1,8 +1,13 @@
+import dotenv from "dotenv";
+dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
+import { logger, loadEnv } from "@neighbr/common";
+
 import { httpServer } from "@/infrastructure/config/app";
 
-const PORT = process.env.PORT;
+const { PORT, SERVICE_NAME } = loadEnv(["PORT", "SERVICE_NAME"]);
 
 httpServer.listen(PORT, () => {
-  `[ SERVICE :: COMMUNICATION SERVICE ] is listening on http://localhost:${PORT}`;
-  `[ SERVICE :: SOCKER SERVER ] is listening on http://localhost:${PORT}`;
+  logger.info(
+    `[ SERVICE :: ${SERVICE_NAME} ] is listening on http://localhost:${PORT}`
+  );
 });

@@ -1,6 +1,9 @@
 #!/bin/bash
 # Script to start multiple services
 
+# Set the environment 
+export NODE_ENV=development
+
 # Start auth service
 cd backend/auth
 npm run dev &
