@@ -1,14 +1,16 @@
 import mongoose from "mongoose";
+import { loadEnv } from "@neighbr/common";
+import { logger } from "@neighbr/common";
 
-const DB_String = process.env.MONGO_URI || "";
+const { MONGO_URI } = loadEnv(["MONGO_URI"]);
 
 const connectDB = async () => {
   try {
-    await mongoose
-      .connect(DB_String)
-      .then(() => console.log(`Connected to database successfully`));
+    await mongoose.connect(MONGO_URI);
+    logger.info("Connected to database successfully");
   } catch (error: any) {
-    console.log(error.message);
+    logger.error(`Database connection error: ${error.message}`);
+    process.exit(1);
   }
 };
 

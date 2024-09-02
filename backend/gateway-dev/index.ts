@@ -25,7 +25,6 @@ app.use(cors(corsOptions));
 
 // Other middleware
 app.use(cookieParser());
-app.use(morgan("dev"));
 
 // Services
 const services = {

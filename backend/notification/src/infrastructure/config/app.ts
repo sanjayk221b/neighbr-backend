@@ -1,5 +1,5 @@
 import express from "express";
-import { config } from "dotenv";
+import dotenv from "dotenv";
 import {
   connectResidentCreatedConsumer,
   disconnectResidentCreatedConsumer,
@@ -9,7 +9,8 @@ import {
   disconnectCaretakerCreatedConsumer,
 } from "@/events/kafka/consumers/caretaker-created.consumer";
 
-config();
+dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
+
 const app = express();
 
 const initializeKafkaConsumers = async () => {
