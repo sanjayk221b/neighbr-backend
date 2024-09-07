@@ -1,18 +1,21 @@
-import { Kafka, Partitioners } from 'kafkajs';
+import { loadEnv } from "@neighbr/common";
+import { Kafka, Partitioners } from "kafkajs";
+
+const { KAFKA_BROKER } = loadEnv(["KAFKA_BROKER"]);
 
 const kafka = new Kafka({
-    clientId: 'auth-service',
-    brokers: ['localhost:29092']
+  clientId: "auth-service",
+  brokers: [KAFKA_BROKER],
 });
 
 export const producer = kafka.producer({
-    createPartitioner: Partitioners.LegacyPartitioner
+  createPartitioner: Partitioners.LegacyPartitioner,
 });
 
 export const connectProducer = async () => {
-    await producer.connect();
+  await producer.connect();
 };
 
 export const disconnectProducer = async () => {
-    await producer.disconnect();
+  await producer.disconnect();
 };

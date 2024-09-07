@@ -1,8 +1,11 @@
 import { Kafka } from "kafkajs";
+import { loadEnv } from "@neighbr/common";
+
+const { KAFKA_BROKER } = loadEnv(["KAFKA_BROKER"]);
 
 const kafka = new Kafka({
   clientId: "notification-service",
-  brokers: ["localhost:29092"],
+  brokers: [KAFKA_BROKER],
   logLevel: 2,
 });
 

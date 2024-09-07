@@ -15,7 +15,6 @@ const messageSchema = new Schema<IMessage>(
     },
     content: {
       type: String,
-      required: true,
     },
     mediaType: {
       type: String,
