@@ -1,33 +1,38 @@
 import { Request, Response, NextFunction } from "express";
 import { ResidentUseCase } from "../use-cases/resident.use-case";
+import { ResponseCreator, statusCodes } from "@neighbr/common";
+import { UnauthorizedError } from "@neighbr/common";
 
 export class ResidentController {
-  private readonly _residentUsecase: ResidentUseCase;
+  private readonly _residentUseCase: ResidentUseCase;
 
-  constructor(ResidentUseCase: ResidentUseCase) {
-    this._residentUsecase = ResidentUseCase;
+  constructor(residentUseCase: ResidentUseCase) {
+    this._residentUseCase = residentUseCase;
   }
 
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { email, password } = req.body;
-      const result = await this._residentUsecase.login(email, password);
+      const result = await this._residentUseCase.login(email, password);
 
-      if (result.token) {
-        res.cookie("neighbr-resident-token", result.token, {
+      if (result) {
+        const { token, resident } = result;
+
+        res.cookie("neighbr-resident-token", token, {
           httpOnly: true,
           secure: true,
-          maxAge: 3660000, // 3600000 + 60000 = 1 hour + 1 minute
+          maxAge: 3600000 + 60000,
           sameSite: "none",
         });
-        res.status(200).json({
-          message: "Login successful",
-          resident: result.resident,
-        });
+
+        const responseCreator = new ResponseCreator()
+          .setData({ token, resident })
+          .setMessage("Login successful")
+          .setStatusCode(statusCodes.OK);
+
+        responseCreator.sendResponse(res);
       } else {
-        res.status(401).json({
-          message: result.message,
-        });
+        throw new UnauthorizedError("Invalid email or password");
       }
     } catch (error) {
       next(error);
@@ -36,12 +41,17 @@ export class ResidentController {
 
   async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      res.cookie("neighbr-user-token", "", {
+      res.cookie("neighbr-resident-token", "", {
         httpOnly: true,
         secure: true,
         expires: new Date(0),
       });
-      res.status(200).json({ message: "Logout successful" });
+
+      const responseCreator = new ResponseCreator()
+        .setMessage("Logout successful")
+        .setStatusCode(statusCodes.OK);
+
+      responseCreator.sendResponse(res);
     } catch (error) {
       next(error);
     }
@@ -54,17 +64,17 @@ export class ResidentController {
   ): Promise<void> {
     try {
       const { email, currentPassword, newPassword } = req.body;
-      const result = await this._residentUsecase.changePassword(
+      await this._residentUseCase.changePassword(
         email,
         currentPassword,
         newPassword
       );
 
-      if (result.success) {
-        res.status(200).json({ success: true, message: result.message });
-      } else {
-        res.status(400).json({ message: result.message });
-      }
+      const responseCreator = new ResponseCreator()
+        .setMessage("Password changed successfully")
+        .setStatusCode(statusCodes.OK);
+
+      responseCreator.sendResponse(res);
     } catch (error) {
       next(error);
     }
