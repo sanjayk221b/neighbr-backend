@@ -4,7 +4,6 @@ import { IResident, ICaretaker } from "@/entities";
 import { ResponseCreator } from "@neighbr/common/dist/utils/response-creator";
 import { statusCodes } from "@neighbr/common";
 import {
-  BadRequestError,
   NotFoundError,
   UnauthorizedError,
 } from "@neighbr/common/dist/utils/error-handler";

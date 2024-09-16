@@ -19,10 +19,16 @@ const caretakerController = new CaretakerController(caretakerUseCase);
 const router = Router();
 
 //authentication routes
-router.post("/login", (req, res, next) => caretakerController.login(req, res, next));
-router.post("/logout", (req, res, next) => caretakerController.logout(req, res, next));
+router.post("/login", (req, res, next) =>
+  caretakerController.login(req, res, next)
+);
+router.post("/logout", (req, res, next) =>
+  caretakerController.logout(req, res, next)
+);
 
 //password management route
-router.put("/change-password", (req, res, next) => caretakerController.changePassword(req, res, next));
+router.put("/change-password", (req, res, next) =>
+  caretakerController.changePassword(req, res, next)
+);
 
 export default router;

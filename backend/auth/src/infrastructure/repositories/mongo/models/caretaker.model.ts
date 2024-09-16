@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose from "mongoose";
 import { ICaretaker } from "@/entities";
 
 const caretakerSchema = new mongoose.Schema<ICaretaker>(
