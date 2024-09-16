@@ -16,6 +16,11 @@ const otpSchema = new mongoose.Schema<IOTP>(
       required: true,
       index: { expires: 0 },
     },
+    userType: {
+      type: String,
+      required: true,
+      enum: ["resident", "caretaker"],
+    },
   },
   {
     timestamps: true,

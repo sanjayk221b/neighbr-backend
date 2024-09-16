@@ -8,6 +8,10 @@ import {
   connectCaretakerCreatedConsumer,
   disconnectCaretakerCreatedConsumer,
 } from "@/events/kafka/consumers/caretaker-created.consumer";
+import {
+  connectOtpConsumer,
+  disconnectOtpConsumer,
+} from "@/events/kafka/consumers/otp.consumer";
 
 dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 
@@ -17,6 +21,7 @@ const initializeKafkaConsumers = async () => {
   try {
     await connectResidentCreatedConsumer();
     await connectCaretakerCreatedConsumer();
+    await connectOtpConsumer();
   } catch (error) {
     process.exit(1);
   }
@@ -28,6 +33,7 @@ process.on("SIGINT", async () => {
   try {
     await disconnectResidentCreatedConsumer();
     await disconnectCaretakerCreatedConsumer();
+    await disconnectOtpConsumer();
     process.exit(0);
   } catch (error) {
     process.exit(1);

@@ -1,5 +1,6 @@
 import { producer, connectProducer, disconnectProducer } from "@/events/kafka";
-import {ICaretaker} from "@/entities";
+import { ICaretaker } from "@/entities";
+import { logger } from "@neighbr/common";
 
 export const sendCaretakerUpdatedEvent = async (caretaker: ICaretaker) => {
   await connectProducer();
@@ -12,8 +13,9 @@ export const sendCaretakerUpdatedEvent = async (caretaker: ICaretaker) => {
         },
       ],
     });
+    logger.info("Caretaker updated event sent successfully");
   } catch (error) {
-    console.error("Failed to send caretaker created event:", error);
+    logger.error("Failed to send caretaker updated event:", error);
   }
   await disconnectProducer();
 };

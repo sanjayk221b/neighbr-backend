@@ -3,7 +3,7 @@ import {
   IResidentRepository,
   ICaretakerRepository,
 } from "@/infrastructure/repositories";
-import { UnauthorizedError } from "@neighbr/common";
+import { UnauthorizedError, BadRequestError } from "@neighbr/common";
 
 export class OTPUseCase {
   private readonly _otpRepository: IOTPRepository;
@@ -20,35 +20,46 @@ export class OTPUseCase {
     this._caretakerRepository = caretakerRepository;
   }
 
-  async generateOTP(email: string): Promise<void> {
-    const resident = await this._residentRepository.getResidentByEmail(email);
-    const caretaker = await this._caretakerRepository.getCaretakerByEmail(
-      email
-    );
+  async generateOTP(email: string, userType: string): Promise<void> {
+    let user;
+    if (userType === "resident") {
+      user = await this._residentRepository.getResidentByEmail(email);
+    } else if (userType === "caretaker") {
+      user = await this._caretakerRepository.getCaretakerByEmail(email);
+    } else {
+      throw new BadRequestError("Invalid user type");
+    }
 
-    if (!resident && !caretaker) {
+    if (!user) {
       throw new UnauthorizedError("User not found");
     }
 
     await this._otpRepository.save({
       email,
       otp: this.generateRandomOTP(),
+      userType,
     });
   }
 
-  // Verify OTP for a user
-  async verifyOTP(email: string, otp: string): Promise<boolean> {
-    const resident = await this._residentRepository.getResidentByEmail(email);
-    const caretaker = await this._caretakerRepository.getCaretakerByEmail(
-      email
-    );
+  async verifyOTP(
+    email: string,
+    otp: string,
+    userType: string
+  ): Promise<boolean> {
+    let user;
+    if (userType === "resident") {
+      user = await this._residentRepository.getResidentByEmail(email);
+    } else if (userType === "caretaker") {
+      user = await this._caretakerRepository.getCaretakerByEmail(email);
+    } else {
+      throw new BadRequestError("Invalid user type");
+    }
 
-    if (!resident && !caretaker) {
+    if (!user) {
       throw new UnauthorizedError("User not found");
     }
 
-    // Verify OTP from OTP repository
-    const isValid = await this._otpRepository.verify(email, otp);
+    const isValid = await this._otpRepository.verify(email, otp, userType);
     if (!isValid) {
       throw new UnauthorizedError("Invalid or expired OTP");
     }
@@ -57,6 +68,6 @@ export class OTPUseCase {
   }
 
   private generateRandomOTP(): string {
-    return Math.floor(100000 + Math.random() * 900000).toString(); // Example: 6-digit OTP
+    return Math.floor(100000 + Math.random() * 900000).toString();
   }
 }

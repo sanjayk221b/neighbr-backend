@@ -17,7 +17,7 @@ export class OTPRepository implements IOTPRepository {
     if (!otpRecord) return false;
 
     const currentTime = new Date();
-    if (otpRecord.expiresAt > currentTime) {
+    if (otpRecord.expiresAt && otpRecord.expiresAt > currentTime) {
       return true;
     }
     return false;

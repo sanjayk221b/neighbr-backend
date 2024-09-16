@@ -1,9 +1,10 @@
-import { IResident, ICaretaker } from "@/entities";
+import { IResident, ICaretaker, IOTP } from "@/entities";
 import {
   sendResidentCreatedEvent,
   sendResidentUpdatedEvent,
   sendCaretakerCreatedEvent,
   sendCaretakerUpdatedEvent,
+  sendOtpGeneratedEvent,
 } from "@/events/kafka/producers";
 
 export class KafkaService {
@@ -18,7 +19,12 @@ export class KafkaService {
   async sendCaretakerCreatedEvent(data: ICaretaker): Promise<void> {
     await sendCaretakerCreatedEvent(data);
   }
+
   async sendCaretakerUpdatedEvent(data: ICaretaker): Promise<void> {
     await sendCaretakerUpdatedEvent(data);
+  }
+
+  async sendOtpGeneratedEvent(data: IOTP): Promise<void> {
+    await sendOtpGeneratedEvent(data);
   }
 }
