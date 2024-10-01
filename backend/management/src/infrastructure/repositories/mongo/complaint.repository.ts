@@ -33,4 +33,8 @@ export class ComplaintsRepository implements IComplaintsRepository {
     }
     return updatedComplaint;
   }
+
+  async pendingComplaintsCount(): Promise<number> {
+    return Complaint.countDocuments();
+  }
 }
