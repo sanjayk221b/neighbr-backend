@@ -38,4 +38,8 @@ export class VisitorRepository implements IVisitorRepository {
       totalPages: Math.ceil(total / limit),
     };
   }
+
+  async pendingVisitorRequests(): Promise<number> {
+    return Visitor.countDocuments();
+  }
 }

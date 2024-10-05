@@ -1,5 +1,5 @@
 import { IWorkerRepository } from "../interfaces/worker-repository.inteface";
-import Worker from "./models/worker.model"; 
+import Worker from "./models/worker.model";
 import { IWorker } from "@/entities/worker.entity";
 
 export class WorkerRepository implements IWorkerRepository {
@@ -22,5 +22,9 @@ export class WorkerRepository implements IWorkerRepository {
 
   async findAll(): Promise<IWorker[]> {
     return await Worker.find().exec();
+  }
+
+  async count(): Promise<number> {
+    return Worker.countDocuments();
   }
 }

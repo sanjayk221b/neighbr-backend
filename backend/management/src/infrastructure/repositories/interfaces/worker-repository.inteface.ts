@@ -6,4 +6,5 @@ export interface IWorkerRepository {
   delete(id: string): Promise<void>;
   findById(id: string): Promise<IWorker | null>;
   findAll(): Promise<IWorker[]>;
+  count(): Promise<number>;
 }

@@ -3,6 +3,7 @@ import {
   IResidentRepository,
   ICaretakerRepository,
 } from "@/infrastructure/repositories";
+import { sendOtpGeneratedEvent } from "@/events/kafka/producers";
 import { UnauthorizedError, BadRequestError } from "@neighbr/common";
 
 export class OTPUseCase {
@@ -34,11 +35,15 @@ export class OTPUseCase {
       throw new UnauthorizedError("User not found");
     }
 
+    const otp = this.generateRandomOTP();
+
     await this._otpRepository.save({
       email,
-      otp: this.generateRandomOTP(),
+      otp: otp,
       userType,
     });
+
+    await sendOtpGeneratedEvent({ email, otp, userType });
   }
 
   async verifyOTP(

@@ -42,7 +42,6 @@ export class CommentsController {
     try {
       const { postId } = req.params;
       const comments = await this._commentsUseCase.getCommentsByPostId(postId);
-      console.log(comments);
       return res.status(statusCodes.OK).json({
         success: true,
         message: "Comments fetched successfully",

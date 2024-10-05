@@ -1,6 +1,7 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { ComplaintsUseCase } from "@/use-cases/complaints.use-case";
 import { IComplaint } from "@/entities";
+import { ResponseCreator, NotFoundError, statusCodes } from "@neighbr/common";
 
 export class ComplaintsController {
   private readonly _complaintsUseCase: ComplaintsUseCase;
@@ -8,6 +9,7 @@ export class ComplaintsController {
   constructor(complaintsUseCase: ComplaintsUseCase) {
     this._complaintsUseCase = complaintsUseCase;
   }
+
   async addComplaint(
     req: any,
     res: Response,
@@ -26,7 +28,10 @@ export class ComplaintsController {
         file
       );
 
-      res.status(201).json(newComplaint);
+      new ResponseCreator()
+        .setData(newComplaint)
+        .setStatusCode(statusCodes.CREATED)
+        .sendResponse(res);
     } catch (error) {
       next(error);
     }
@@ -42,7 +47,15 @@ export class ComplaintsController {
       const complaints = await this._complaintsUseCase.getComplaintsByResident(
         residentId
       );
-      res.status(200).json(complaints);
+
+      if (!complaints || complaints.length === 0) {
+        throw new NotFoundError("No complaints found for the resident");
+      }
+
+      new ResponseCreator()
+        .setData(complaints)
+        .setStatusCode(statusCodes.OK)
+        .sendResponse(res);
     } catch (error) {
       next(error);
     }
@@ -55,7 +68,15 @@ export class ComplaintsController {
   ): Promise<void> {
     try {
       const complaints = await this._complaintsUseCase.getComplaintsByAdmin();
-      res.status(200).json(complaints);
+
+      if (!complaints || complaints.length === 0) {
+        throw new NotFoundError("No complaints found for admin");
+      }
+
+      new ResponseCreator()
+        .setData(complaints)
+        .setStatusCode(statusCodes.OK)
+        .sendResponse(res);
     } catch (error) {
       next(error);
     }
@@ -69,13 +90,25 @@ export class ComplaintsController {
     try {
       const complaints =
         await this._complaintsUseCase.getComplaintsByCaretaker();
-      res.status(200).json(complaints);
+
+      if (!complaints || complaints.length === 0) {
+        throw new NotFoundError("No complaints found for caretaker");
+      }
+
+      new ResponseCreator()
+        .setData(complaints)
+        .setStatusCode(statusCodes.OK)
+        .sendResponse(res);
     } catch (error) {
       next(error);
     }
   }
 
-  async updateComplaint(req: Request, res: Response, next: NextFunction) {
+  async updateComplaint(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const { id: complaintId, data: updateData } = req.body;
 
@@ -83,7 +116,15 @@ export class ComplaintsController {
         complaintId,
         updateData
       );
-      res.status(200).json(updatedComplaint);
+
+      if (!updatedComplaint) {
+        throw new NotFoundError("Complaint not found or could not be updated");
+      }
+
+      new ResponseCreator()
+        .setData(updatedComplaint)
+        .setStatusCode(statusCodes.OK)
+        .sendResponse(res);
     } catch (error) {
       next(error);
     }

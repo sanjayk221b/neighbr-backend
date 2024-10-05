@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { AnnouncementsUseCase } from "@/use-cases/announcements.use-case";
 import { IAnnouncement } from "@/entities";
-import { ResponseCreator } from "@neighbr/common";
-import { NotFoundError } from "@neighbr/common";
+import { ResponseCreator, NotFoundError, statusCodes } from "@neighbr/common";
 
 export class AnnouncementsController {
   private _announcementsUseCase: AnnouncementsUseCase;
@@ -17,7 +16,6 @@ export class AnnouncementsController {
     next: NextFunction
   ): Promise<void> {
     try {
-      console.log("Request received for creating a new announcement", req.body);
       const announcementData: Omit<
         IAnnouncement,
         "_id" | "createdAt" | "updatedAt"
@@ -28,7 +26,7 @@ export class AnnouncementsController {
 
       new ResponseCreator()
         .setData(newAnnouncement)
-        .setStatusCode(201)
+        .setStatusCode(statusCodes.CREATED)
         .sendResponse(res);
     } catch (error) {
       next(error);
@@ -48,7 +46,7 @@ export class AnnouncementsController {
       if (announcements.length > 0) {
         new ResponseCreator()
           .setData(announcements)
-          .setStatusCode(200)
+          .setStatusCode(statusCodes.OK)
           .sendResponse(res);
       } else {
         throw new NotFoundError("No announcements found");

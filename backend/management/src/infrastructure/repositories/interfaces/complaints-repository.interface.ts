@@ -5,4 +5,5 @@ export interface IComplaintsRepository {
   getComplaintsByResident(residentId: string): Promise<IComplaint[]>;
   getAllComplaintsByRecipientType(recipientType: string): Promise<IComplaint[]>;
   updateComplaint(complaintId: string, updateData: Partial<IComplaint>): Promise<IComplaint>;
+  pendingComplaintsCount(): Promise<number>
 }

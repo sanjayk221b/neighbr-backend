@@ -15,11 +15,7 @@ export class ServicesRepository implements IServiceRepository {
   }
 
   async getRequests(): Promise<IService[]> {
-    try {
-      return await Service.find({});
-    } catch (error: any) {
-      throw new Error(`Failed to get requests: ${error.message}`);
-    }
+    return await Service.find({});
   }
 
   async getRequestsByResidentId(
@@ -28,38 +24,32 @@ export class ServicesRepository implements IServiceRepository {
     limit: number,
     search: string
   ): Promise<IService[]> {
-    try {
-      const query: any = { residentId };
-      if (search) {
-        query.$text = { $search: search };
-      }
-
-      const skip = (page - 1) * limit;
-
-      return await Service.find(query).skip(skip).limit(limit);
-    } catch (error: any) {
-      throw new Error(
-        `Failed to get requests by resident ID: ${error.message}`
-      );
+    const query: any = { residentId };
+    if (search) {
+      query.$text = { $search: search };
     }
+
+    const skip = (page - 1) * limit;
+
+    return await Service.find(query).skip(skip).limit(limit);
   }
 
   async updateServiceRequests(
     serviceId: string,
     updateData: Partial<IService>
   ): Promise<IService> {
-    try {
-      const updatedService = await Service.findByIdAndUpdate(
-        serviceId,
-        updateData,
-        { new: true }
-      );
-      if (!updatedService) {
-        throw new Error("Service not found");
-      }
-      return updatedService;
-    } catch (error: any) {
-      throw new Error(`Failed to update service: ${error.message}`);
+    const updatedService = await Service.findByIdAndUpdate(
+      serviceId,
+      updateData,
+      { new: true }
+    );
+    if (!updatedService) {
+      throw new Error("Service not found");
     }
+    return updatedService;
+  }
+
+  async pendingServiceRequestsCount(): Promise<number> {
+    return await Service.countDocuments({ status: "pending" });
   }
 }

@@ -7,6 +7,7 @@ import serviceRoutes from "../routes/services.routes";
 import complaintRoutes from "../routes/complaints.routes";
 import workerRoutes from "../routes/worker.routes";
 import announcementRoutes from "../routes/announcements.routes";
+import dashboardRoutes from "../routes/dashboard.routes";
 import {
   connectResidentUpdatedConsumer,
   disconnectResidentUpdatedConsumer,
@@ -23,6 +24,7 @@ connectResidentUpdatedConsumer();
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+
 // app.use(
 //   cors({
 //     origin: CLIENT_URL,
@@ -37,6 +39,7 @@ app.use("/api/management/services", serviceRoutes);
 app.use("/api/management/complaints", complaintRoutes);
 app.use("/api/management/workers", workerRoutes);
 app.use("/api/management/announcements", announcementRoutes);
+app.use("/api/management/dashboard", dashboardRoutes);
 
 app.use(errorHandler);
 

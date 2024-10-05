@@ -5,4 +5,5 @@ export interface IWorkerRepository {
   update(id: string, worker: Partial<IWorker>): Promise<IWorker | null>;
   findById(id: string): Promise<IWorker | null>;
   findAll(): Promise<IWorker[]>;
+  count(): Promise<number>;
 }
