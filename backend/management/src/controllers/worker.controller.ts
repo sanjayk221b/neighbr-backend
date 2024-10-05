@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import { WorkerUseCase } from "@/use-cases/worker.use-case";
 import { IWorker } from "@/entities/worker.entity";
+import { ResponseCreator, NotFoundError, statusCodes } from "@neighbr/common";
 
 export class WorkerController {
-  private _workerUseCase: WorkerUseCase;
+  private readonly _workerUseCase: WorkerUseCase;
 
   constructor(workerUseCase: WorkerUseCase) {
     this._workerUseCase = workerUseCase;
@@ -15,11 +16,14 @@ export class WorkerController {
     next: NextFunction
   ): Promise<void> {
     try {
-      console.log("request recieved for creating new worker", req.body);
-      console.log(req.file);
       const worker: IWorker = req.body;
       const newWorker = await this._workerUseCase.createWorker(worker);
-      res.status(201).json(newWorker);
+
+      new ResponseCreator()
+        .setData(newWorker)
+        .setMessage("Worker created successfully")
+        .setStatusCode(statusCodes.CREATED)
+        .sendResponse(res);
     } catch (error) {
       next(error);
     }
@@ -37,11 +41,16 @@ export class WorkerController {
         id,
         workerUpdates
       );
-      if (updatedWorker) {
-        res.status(200).json(updatedWorker);
-      } else {
-        res.status(404).json({ message: "Worker not found" });
+
+      if (!updatedWorker) {
+        throw new NotFoundError("Worker not found");
       }
+
+      new ResponseCreator()
+        .setData(updatedWorker)
+        .setMessage("Worker updated successfully")
+        .setStatusCode(statusCodes.OK)
+        .sendResponse(res);
     } catch (error) {
       next(error);
     }
@@ -55,7 +64,11 @@ export class WorkerController {
     try {
       const { id } = req.params;
       await this._workerUseCase.deleteWorker(id);
-      res.status(204).send();
+
+      new ResponseCreator()
+        .setMessage("Worker deleted successfully")
+        .setStatusCode(statusCodes.NO_CONTENT)
+        .sendResponse(res);
     } catch (error) {
       next(error);
     }
@@ -69,11 +82,15 @@ export class WorkerController {
     try {
       const { id } = req.params;
       const worker = await this._workerUseCase.getWorkerById(id);
-      if (worker) {
-        res.status(200).json(worker);
-      } else {
-        res.status(404).json({ message: "Worker not found" });
+
+      if (!worker) {
+        throw new NotFoundError("Worker not found");
       }
+
+      new ResponseCreator()
+        .setData(worker)
+        .setStatusCode(statusCodes.OK)
+        .sendResponse(res);
     } catch (error) {
       next(error);
     }
@@ -86,7 +103,11 @@ export class WorkerController {
   ): Promise<void> {
     try {
       const workers = await this._workerUseCase.getAllWorkers();
-      res.status(200).json(workers);
+
+      new ResponseCreator()
+        .setData(workers)
+        .setStatusCode(statusCodes.OK)
+        .sendResponse(res);
     } catch (error) {
       next(error);
     }

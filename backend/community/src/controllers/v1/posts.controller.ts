@@ -173,7 +173,6 @@ export class PostsController {
     try {
       const { page = 1, limit = 10 } = req.query;
 
-      console.log(req.query);
       const reports = await this._reportsUseCase.getReports(
         Number(page),
         Number(limit)

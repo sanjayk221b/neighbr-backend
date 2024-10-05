@@ -16,5 +16,10 @@ export class ResidentRepository implements IResidentRepository {
 
     return updatedResident;
   }
+
+  async count(): Promise<number> {
+    return Resident.countDocuments({
+      $or: [{ isAdmin: false }, { isAdmin: { $exists: false } }],
+    });
+  }
 }
- 

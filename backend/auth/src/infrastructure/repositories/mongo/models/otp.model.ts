@@ -13,7 +13,6 @@ const otpSchema = new mongoose.Schema<IOTP>(
     },
     expiresAt: {
       type: Date,
-      required: true,
       index: { expires: 0 },
     },
     userType: {

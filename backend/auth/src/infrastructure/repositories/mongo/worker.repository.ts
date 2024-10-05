@@ -19,4 +19,8 @@ export class WorkerRepository implements IWorkerRepository {
   async findAll(): Promise<IWorker[]> {
     return await Worker.find();
   }
+
+  async count(): Promise<number> {
+    return Worker.countDocuments();
+  }
 }

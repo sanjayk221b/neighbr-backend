@@ -45,4 +45,8 @@ export class CaretakerRepository implements ICaretakerRepository {
       { new: true }
     );
   }
+
+  async count(): Promise<number> {
+    return Caretaker.countDocuments();
+  }
 }
