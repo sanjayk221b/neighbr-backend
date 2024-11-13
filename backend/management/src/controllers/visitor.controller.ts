@@ -9,7 +9,7 @@ export class VisitorController {
   constructor(visitorUseCase: VisitorUseCase) {
     this._visitorUseCase = visitorUseCase;
   }
-
+ 
   async createVisitor(
     req: Request,
     res: Response,
@@ -34,18 +34,19 @@ export class VisitorController {
   }
 
   async getVisitors(
-    req: Request,
+    req: any,
     res: Response,
     next: NextFunction
   ): Promise<void> {
     try {
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 10;
-      const visitors = await this._visitorUseCase.getVisitors(page, limit);
-
-      if (!visitors || visitors.length === 0) {
-        throw new NotFoundError("No visitors found");
-      }
+      const search = req.query.search || "";
+      const visitors = await this._visitorUseCase.getVisitors(
+        page,
+        limit,
+        search
+      );
 
       new ResponseCreator()
         .setData(visitors)
@@ -65,10 +66,12 @@ export class VisitorController {
       const residentId = req.residentId;
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 10;
+      const search = req.query.search || "";
       const visitors = await this._visitorUseCase.getVisitorsByResidentId(
         residentId,
         page,
-        limit
+        limit,
+        search
       );
 
       new ResponseCreator()

@@ -22,16 +22,29 @@ export class ServicesRepository implements IServiceRepository {
     residentId: string,
     page: number,
     limit: number,
-    search: string
-  ): Promise<IService[]> {
+    search: string = ""
+  ): Promise<{ data: IService[]; totalPages: number }> {
     const query: any = { residentId };
+
     if (search) {
-      query.$text = { $search: search };
+      query.$or = [
+        { description: { $regex: search, $options: "i" } },
+        { serviceType: { $regex: search, $options: "i" } },
+        { workerName: { $regex: search, $options: "i" } },
+      ];
     }
 
     const skip = (page - 1) * limit;
 
-    return await Service.find(query).skip(skip).limit(limit);
+    const [data, total] = await Promise.all([
+      Service.find(query).skip(skip).limit(limit).exec(),
+      Service.countDocuments(query),
+    ]);
+
+    return {
+      data,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async updateServiceRequests(

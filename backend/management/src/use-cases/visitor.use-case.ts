@@ -20,7 +20,6 @@ export class VisitorUseCase {
         const result = await this._cloudinary.upload(file);
         data.image = result;
       } catch (err) {
-        console.error("Error uploading image to Cloudinary:", err);
         throw new Error("Image upload failed");
       }
     }
@@ -29,19 +28,25 @@ export class VisitorUseCase {
     return newVisitor;
   }
 
-  async getVisitors(page: number, limit: number): Promise<IVisitor[]> {
-    return await this._visitorRepository.getVisitors(page, limit);
+  async getVisitors(
+    page: number,
+    limit: number,
+    search: string
+  ): Promise<{ data: IVisitor[]; totalPages: number }> {
+    return await this._visitorRepository.getVisitors(page, limit, search);
   }
 
   async getVisitorsByResidentId(
     residentId: string,
     page: number,
-    limit: number
+    limit: number,
+    search: string
   ): Promise<{ data: IVisitor[]; totalPages: number }> {
     return await this._visitorRepository.getVisitorsByResident(
       residentId,
       page,
-      limit
+      limit,
+      search
     );
   }
 

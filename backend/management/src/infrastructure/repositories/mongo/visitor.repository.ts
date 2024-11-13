@@ -10,9 +10,34 @@ export class VisitorRepository implements IVisitorRepository {
     return newVisitor;
   }
 
-  async getVisitors(page: number, limit: number): Promise<IVisitor[]> {
+  async getVisitors(
+    page: number,
+    limit: number,
+    search: string = ""
+  ): Promise<{ data: IVisitor[]; totalPages: number }> {
     const skip = (page - 1) * limit;
-    return VisitorModel.find().skip(skip).limit(limit).exec();
+
+    const query: any = {};
+
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+        { apartmentNumber: { $regex: search, $options: "i" } },
+        { mobileNumber: { $regex: search, $options: "i" } },
+        { vehicleNumber: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const [data, total] = await Promise.all([
+      VisitorModel.find(query).skip(skip).limit(limit).exec(),
+      VisitorModel.countDocuments(query),
+    ]);
+
+    return {
+      data,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async updateVisitor(id: string, visitor: IVisitor): Promise<IVisitor | null> {
@@ -25,12 +50,23 @@ export class VisitorRepository implements IVisitorRepository {
   async getVisitorsByResident(
     residentId: string,
     page: number,
-    limit: number
+    limit: number,
+    search: string = ""
   ): Promise<{ data: IVisitor[]; totalPages: number }> {
     const skip = (page - 1) * limit;
+
+    const query: any = { residentId };
+
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+      ];
+    }
+
     const [data, total] = await Promise.all([
-      VisitorModel.find({ residentId }).skip(skip).limit(limit).exec(),
-      VisitorModel.countDocuments({ residentId }),
+      VisitorModel.find(query).skip(skip).limit(limit).exec(),
+      VisitorModel.countDocuments(query),
     ]);
 
     return {
