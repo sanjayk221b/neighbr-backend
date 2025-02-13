@@ -57,6 +57,9 @@ router.post("/posts/:postId/reports/create", currentUser, (req, res, next) =>
 router.get("/posts/reports", (req, res, next) =>
   postsController.getReports(req, res, next)
 );
+router.post("/posts/:postId/like", currentUser, (req, res, next) =>
+  postsController.likePost(req, res, next)
+);
 
 // Comment Routes
 router.post("/comments/:postId/create", currentUser, (req, res, next) =>

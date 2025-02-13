@@ -208,4 +208,41 @@ export class PostsController {
       next(error);
     }
   }
+
+  async likePost(req: Request, res: Response, next: NextFunction) {
+    try {
+      const currentUser = req.currentUser;
+      if (!currentUser) {
+        throw new UnauthorizedError("Unauthorized");
+      }
+
+      const { postId } = req.params;
+      const post = await this._postsUseCase.getPostById(postId);
+      if (!post) {
+        throw new NotFoundError("Post not found");
+      }
+
+      console.log("Post:", post);
+      console.log("Likes field:", post.likes);
+      console.log("Current User ID:", currentUser.id);
+
+      const hasLiked = post.likes.includes(currentUser.id);
+      const updatedLikes = hasLiked
+        ? post.likes.filter((id) => id.toString() !== currentUser.id.toString())
+        : [...post.likes, currentUser.id];
+
+      const updatedPost = await this._postsUseCase.updatePost(postId, {
+        likes: updatedLikes,
+      });
+
+      const response = new ResponseCreator()
+        .setData(updatedPost)
+        .setStatusCode(statusCodes.OK)
+        .setMessage(hasLiked ? "Post unliked" : "Post liked");
+
+      response.sendResponse(res);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
