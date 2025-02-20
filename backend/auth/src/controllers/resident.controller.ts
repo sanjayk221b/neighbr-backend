@@ -15,7 +15,7 @@ export class ResidentController {
       const { email, password } = req.body;
       const result = await this._residentUseCase.login(email, password);
 
-      if (result) {
+      if (result.token) {
         const { token, resident } = result;
 
         res.cookie("neighbr-resident-token", token, {
