@@ -71,7 +71,7 @@ export class ServicesController {
           search as string
         );
 
-      if (!serviceRequests || serviceRequests.length === 0) {
+      if (!serviceRequests || serviceRequests.data.length === 0) {
         throw new NotFoundError("No service requests found for the resident");
       }
 

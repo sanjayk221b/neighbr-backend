@@ -29,4 +29,13 @@ export class PostsRepository implements IPostsRepository {
     );
     return result !== null;
   }
+
+  async updatePost(
+    id: string,
+    updatedPost: Partial<IPost>
+  ): Promise<IPost | null> {
+    return await Post.findByIdAndUpdate(id, updatedPost, {
+      new: true,
+    }).populate("author.id");
+  }
 }

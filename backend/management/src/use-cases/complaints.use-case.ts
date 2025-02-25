@@ -31,18 +31,39 @@ export class ComplaintsUseCase {
     return await this._complaintsRepository.addComplaint(complaintData);
   }
 
-  async getComplaintsByResident(residentId: string): Promise<IComplaint[]> {
-    return await this._complaintsRepository.getComplaintsByResident(residentId);
-  }
-  async getComplaintsByAdmin(): Promise<IComplaint[]> {
-    return await this._complaintsRepository.getAllComplaintsByRecipientType(
-      "admin"
+  async getComplaintsByResident(
+    residentId: string,
+    page: number,
+    limit: number,
+    search: string
+  ): Promise<{ data: IComplaint[]; totalPages: number }> {
+    return await this._complaintsRepository.getComplaintsByResident(
+      residentId,
+      page,
+      limit,
+      search
     );
   }
 
-  async getComplaintsByCaretaker(): Promise<IComplaint[]> {
+  async getComplaintsByAdmin(
+    page: number,
+    limit: number
+  ): Promise<IComplaint[]> {
     return await this._complaintsRepository.getAllComplaintsByRecipientType(
-      "caretaker"
+      "admin",
+      page,
+      limit
+    );
+  }
+
+  async getComplaintsByCaretaker(
+    page: number,
+    limit: number
+  ): Promise<IComplaint[]> {
+    return await this._complaintsRepository.getAllComplaintsByRecipientType(
+      "caretaker",
+      page,
+      limit
     );
   }
 

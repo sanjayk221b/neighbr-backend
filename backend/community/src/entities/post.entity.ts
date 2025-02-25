@@ -7,7 +7,8 @@ export interface IPost extends Document {
   _id?: ObjectId | string;
   content: string;
   images?: string[];
-  likes: Number;
+  likes: Array<ObjectId | string>;
   comments: Number;
   isDeleted?: boolean;
 }
+ 

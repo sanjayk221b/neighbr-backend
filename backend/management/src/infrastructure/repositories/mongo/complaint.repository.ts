@@ -9,14 +9,42 @@ export class ComplaintsRepository implements IComplaintsRepository {
     return newComplaint;
   }
 
-  async getComplaintsByResident(residentId: string): Promise<IComplaint[]> {
-    return await Complaint.find({ residentId });
+  async getComplaintsByResident(
+    residentId: string,
+    page: number,
+    limit: number,
+    search: string = ""
+  ): Promise<{ data: IComplaint[]; totalPages: number }> {
+    const skip = (page - 1) * limit;
+
+    const query: any = { residentId };
+
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const [complaints, total] = await Promise.all([
+      Complaint.find(query).skip(skip).limit(limit).exec(),
+      Complaint.countDocuments(query),
+    ]);
+
+    return { data: complaints, totalPages: Math.ceil(total / limit) };
   }
 
   async getAllComplaintsByRecipientType(
-    recipientType: string
+    recipientType: string,
+    page: number,
+    limit: number
   ): Promise<IComplaint[]> {
-    return Complaint.find({ recipientType }).populate("residentId").exec();
+    const skip = (page - 1) * limit;
+    return Complaint.find({ recipientType })
+      .populate("residentId")
+      .skip(skip)
+      .limit(limit)
+      .exec();
   }
 
   async updateComplaint(

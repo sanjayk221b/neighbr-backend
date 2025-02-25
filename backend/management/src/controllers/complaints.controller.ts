@@ -11,7 +11,7 @@ export class ComplaintsController {
   }
 
   async addComplaint(
-    req: any,
+    req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> {
@@ -44,16 +44,19 @@ export class ComplaintsController {
   ): Promise<void> {
     try {
       const residentId = req.residentId;
-      const complaints = await this._complaintsUseCase.getComplaintsByResident(
-        residentId
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const search = req.query.search || "";
+
+      const data = await this._complaintsUseCase.getComplaintsByResident(
+        residentId,
+        page,
+        limit,
+        search
       );
 
-      if (!complaints || complaints.length === 0) {
-        throw new NotFoundError("No complaints found for the resident");
-      }
-
       new ResponseCreator()
-        .setData(complaints)
+        .setData(data)
         .setStatusCode(statusCodes.OK)
         .sendResponse(res);
     } catch (error) {
@@ -67,7 +70,13 @@ export class ComplaintsController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const complaints = await this._complaintsUseCase.getComplaintsByAdmin();
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+
+      const complaints = await this._complaintsUseCase.getComplaintsByAdmin(
+        page,
+        limit
+      );
 
       if (!complaints || complaints.length === 0) {
         throw new NotFoundError("No complaints found for admin");
@@ -88,8 +97,13 @@ export class ComplaintsController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const complaints =
-        await this._complaintsUseCase.getComplaintsByCaretaker();
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+
+      const complaints = await this._complaintsUseCase.getComplaintsByCaretaker(
+        page,
+        limit
+      );
 
       if (!complaints || complaints.length === 0) {
         throw new NotFoundError("No complaints found for caretaker");

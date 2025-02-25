@@ -1,5 +1,6 @@
 import { IPost } from "@/entities";
 import { IPostsRepository } from "@/infrastructure/repositories/interfaces";
+import { NotFoundError } from "@neighbr/common";
 
 export class PostsUseCase {
   constructor(private _postsRepository: IPostsRepository) {}
@@ -17,5 +18,13 @@ export class PostsUseCase {
 
   async deletePost(id: string): Promise<boolean> {
     return await this._postsRepository.deletePost(id);
+  }
+
+  async updatePost(id: string, updatedPost: Partial<IPost>): Promise<IPost> {
+    const post = await this._postsRepository.updatePost(id, updatedPost);
+    if (!post) {
+      throw new NotFoundError("Post not found");
+    }
+    return post;
   }
 }

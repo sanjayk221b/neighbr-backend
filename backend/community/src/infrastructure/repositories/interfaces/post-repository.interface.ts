@@ -5,5 +5,5 @@ export interface IPostsRepository {
   getPosts(): Promise<IPost[]>;
   getPostById(id: string): Promise<IPost | null>;
   deletePost(id: string): Promise<boolean>;
-  // updatePost(id: string, updatedPost: Partial<IPost>): Promise<IPost | null>;
+  updatePost(id: string, updateData: Partial<IPost>): Promise<IPost | null>;
 }
