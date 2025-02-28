@@ -1,4 +1,3 @@
-export * from "./admin.repository";
 export * from "./caretaker.repository";
 export * from "./resident.repository";
 export * from "./otp.repository";

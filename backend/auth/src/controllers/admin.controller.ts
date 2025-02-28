@@ -64,12 +64,17 @@ export class AdminController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const residents = await this._adminUseCase.getResidents();
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const search = (req.query.search as string) || "";
+
+      const data = await this._adminUseCase.getResidents(page, limit, search);
 
       const response = new ResponseCreator()
-        .setData(residents)
+        .setData(data)
         .setStatusCode(statusCodes.OK)
         .setMessage("Residents fetched successfully");
+
       response.sendResponse(res);
     } catch (error) {
       next(error);

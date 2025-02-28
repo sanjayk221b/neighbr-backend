@@ -71,8 +71,12 @@ export class AdminUseCase {
     };
   }
 
-  async getResidents(): Promise<IResident[]> {
-    return await this._residentRepository.getResidents();
+  async getResidents(
+    page: number,
+    limit: number,
+    search: string
+  ): Promise<{ data: IResident[]; totalPages: number }> {
+    return await this._residentRepository.getResidents(page, limit, search);
   }
 
   async addResident(
@@ -82,7 +86,7 @@ export class AdminUseCase {
     if (file) {
       try {
         const result = await cloudinary.uploader.upload(file.path);
-        data.image = result.secure_url; 
+        data.image = result.secure_url;
       } catch (err) {
         throw new Error("Image upload failed");
       }

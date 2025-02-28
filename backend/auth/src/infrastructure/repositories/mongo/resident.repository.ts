@@ -6,10 +6,31 @@ import bcrypt from "bcrypt";
 const SALT_ROUNDS = 10;
 
 export class ResidentRepository implements IResidentRepository {
-  async getResidents(): Promise<IResident[]> {
-    return Resident.find({
-      $or: [{ isAdmin: false }, { isAdmin: { $exists: false } }],
-    });
+  async getResidents(
+    page: number,
+    limit: number,
+    search: string = ""
+  ): Promise<{ data: IResident[]; totalPages: number }> {
+    const skip = (page - 1) * limit;
+
+    const query: any = {};
+
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const [residents, total] = await Promise.all([
+      Resident.find(query).skip(skip).limit(limit).exec(),
+      Resident.countDocuments(query),
+    ]);
+
+    return {
+      data: residents,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async addResident(resident: IResident): Promise<IResident> {
